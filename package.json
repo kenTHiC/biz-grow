@@ -1,0 +1,68 @@
+{
+  "name": "biz-grow-dashboard",
+  "version": "1.0.0",
+  "description": "A modern, responsive business analytics dashboard built with React, featuring real-time data visualization, customer management, and financial tracking.",
+  "type": "module",
+  "keywords": [
+    "react",
+    "dashboard",
+    "analytics",
+    "business",
+    "charts",
+    "tailwind",
+    "vite",
+    "customer-management",
+    "financial-tracking",
+    "data-visualization"
+  ],
+  "author": {
+    "name": "kenthic",
+    "email": "bizgrowapp@gmail.com",
+    "url": "https://github.com/kenthic"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kenthic/biz-grow.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kenthic/biz-grow/issues"
+  },
+  "homepage": "https://github.com/kenthic/biz-grow#readme",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --ext js,jsx --fix",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
+    "clean": "rm -rf dist node_modules/.vite",
+    "serve": "npm run build && npm run preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.15.0",
+    "recharts": "^2.8.0",
+    "framer-motion": "^10.16.0",
+    "lucide-react": "^0.279.0",
+    "date-fns": "^2.30.0",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^1.14.0",
+    "class-variance-authority": "^0.7.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.0.3",
+    "autoprefixer": "^10.4.15",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "postcss": "^8.4.27",
+    "tailwindcss": "^3.3.3",
+    "vite": "^4.4.5"
+  }
+}

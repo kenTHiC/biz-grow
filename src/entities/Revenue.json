@@ -1,0 +1,44 @@
+{
+  "name": "Revenue",
+  "type": "object",
+  "properties": {
+    "amount": {
+      "type": "number",
+      "description": "Revenue amount"
+    },
+    "source": {
+      "type": "string",
+      "description": "Revenue source"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "product_sales",
+        "service_revenue",
+        "subscription",
+        "consulting",
+        "licensing",
+        "other"
+      ],
+      "default": "product_sales",
+      "description": "Revenue category"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Revenue date"
+    },
+    "customer_name": {
+      "type": "string",
+      "description": "Customer or client name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Revenue description"
+    }
+  },
+  "required": [
+    "amount",
+    "date"
+  ]
+}
