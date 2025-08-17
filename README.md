@@ -280,7 +280,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 - 📧 **Email**: bizgrowapp@gmail.com
-- 💬 **Discord**: [Join our community](https://discord.gg/bizgrow)
+- 💬 **Discord**: [Join our community](https://discord.gg/s27WGufPgp)
 - 🐛 **Issues**: [GitHub Issues](../../issues)
 - 📖 **Wiki**: [Project Wiki](../../wiki)
 
@@ -288,7 +288,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-**Made with ❤️ by the BizGrow Team**
+**Made with ❤️ by kenTHiC**
 
 [![GitHub stars](https://img.shields.io/github/stars/kenthic/biz-grow?style=social)](../../stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/kenthic/biz-grow?style=social)](../../network/members)
