@@ -101,4 +101,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Support
 
-For support, please visit our [GitHub Issues](https://github.com/yourusername/biz-grow/issues) page.
+For support, please visit our [GitHub Issues](https://github.com/kenthic/biz-grow/issues) page.

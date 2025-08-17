@@ -16,7 +16,7 @@ Vercel provides the easiest deployment experience for React applications.
 
 #### Quick Deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/biz-grow)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/kenthic/biz-grow)
 
 #### Manual Deployment
 
@@ -48,7 +48,7 @@ Netlify offers excellent static site hosting with continuous deployment.
 
 #### Quick Deploy
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/yourusername/biz-grow)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/kenthic/biz-grow)
 
 #### Manual Deployment
 

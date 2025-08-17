@@ -12,7 +12,7 @@
 
 **A modern, responsive business analytics dashboard built with React, featuring real-time data visualization, customer management, and financial tracking.**
 
-[🚀 Live Demo](#) • [📖 Documentation](#documentation) • [🐛 Report Bug](../../issues) • [✨ Request Feature](../../issues)
+[🚀 Live Demo](https://68a1d6ab62d8c9f8a21d385c--astounding-cactus-5e7d29.netlify.app/) • [📖 Documentation](#-documentation) • [🐛 Report Bug](../../issues) • [✨ Request Feature](../../issues)
 
 </div>
 

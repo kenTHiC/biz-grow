@@ -43,7 +43,7 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 ### Setting Up Your Development Environment
 
 1. Fork the repository
-2. Clone your fork: `git clone https://github.com/yourusername/biz-grow.git`
+2. Clone your fork: `git clone https://github.com/kenthic/biz-grow.git`
 3. Install dependencies: `npm install`
 4. Start the development server: `npm run dev`
 
