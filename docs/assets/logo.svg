@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <!-- Diamond Shape -->
+  <path d="M200 120 L280 200 L200 280 L120 200 Z" fill="#2E86AB" stroke="#1B4F72" stroke-width="3"/>
+  
+  <!-- Inner Diamond -->
+  <path d="M200 140 L260 200 L200 260 L140 200 Z" fill="none" stroke="#3498DB" stroke-width="2"/>
+  
+  <!-- Upward Arrows -->
+  <!-- Left Arrow -->
+  <path d="M160 80 L160 160 M140 100 L160 80 L180 100" fill="none" stroke="#5DADE2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Center Arrow -->
+  <path d="M200 60 L200 140 M180 80 L200 60 L220 80" fill="none" stroke="#3498DB" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Right Arrow -->
+  <path d="M240 80 L240 160 M220 100 L240 80 L260 100" fill="none" stroke="#2E86AB" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Text -->
+  <text x="200" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#2E86AB">BIZ GROW</text>
+</svg>

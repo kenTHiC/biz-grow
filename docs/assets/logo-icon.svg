@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Diamond Shape -->
+  <path d="M50 20 L80 50 L50 80 L20 50 Z" fill="#2E86AB" stroke="#1B4F72" stroke-width="2"/>
+  
+  <!-- Inner Diamond -->
+  <path d="M50 25 L75 50 L50 75 L25 50 Z" fill="none" stroke="#3498DB" stroke-width="1.5"/>
+  
+  <!-- Upward Arrows -->
+  <!-- Left Arrow -->
+  <path d="M35 10 L35 40 M30 15 L35 10 L40 15" fill="none" stroke="#5DADE2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Center Arrow -->
+  <path d="M50 5 L50 35 M45 10 L50 5 L55 10" fill="none" stroke="#3498DB" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Right Arrow -->
+  <path d="M65 10 L65 40 M60 15 L65 10 L70 15" fill="none" stroke="#2E86AB" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Diamond Shape -->
+  <path d="M16 6 L26 16 L16 26 L6 16 Z" fill="#2E86AB"/>
+  
+  <!-- Inner Diamond -->
+  <path d="M16 8 L24 16 L16 24 L8 16 Z" fill="none" stroke="#3498DB" stroke-width="1"/>
+  
+  <!-- Upward Arrows -->
+  <!-- Left Arrow -->
+  <path d="M11 2 L11 12 M9 4 L11 2 L13 4" fill="none" stroke="#5DADE2" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Center Arrow -->
+  <path d="M16 1 L16 11 M14 3 L16 1 L18 3" fill="none" stroke="#3498DB" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Right Arrow -->
+  <path d="M21 2 L21 12 M19 4 L21 2 L23 4" fill="none" stroke="#2E86AB" stroke-width="2" stroke-linecap="round"/>
+</svg>

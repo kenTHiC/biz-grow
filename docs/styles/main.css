@@ -6,24 +6,26 @@
 }
 
 :root {
-    --primary-color: #3b82f6;
-    --primary-dark: #1d4ed8;
-    --secondary-color: #10b981;
-    --accent-color: #f59e0b;
-    --text-primary: #1f2937;
-    --text-secondary: #6b7280;
-    --text-light: #9ca3af;
+    /* BizGrow Brand Colors */
+    --primary-color: #3498DB;        /* Medium Blue from logo */
+    --primary-dark: #1B4F72;        /* Navy Blue from logo */
+    --primary-light: #5DADE2;       /* Light Blue from logo */
+    --secondary-color: #2E86AB;     /* Dark Blue from logo */
+    --accent-color: #5DADE2;        /* Light Blue accent */
+    --text-primary: #1B4F72;        /* Navy for text */
+    --text-secondary: #2E86AB;      /* Dark blue for secondary text */
+    --text-light: #6b7280;          /* Gray for light text */
     --bg-primary: #ffffff;
-    --bg-secondary: #f9fafb;
-    --bg-dark: #111827;
-    --border-color: #e5e7eb;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --bg-secondary: #f8fafc;
+    --bg-dark: #1B4F72;             /* Navy background */
+    --border-color: #e1f5fe;
+    --shadow-sm: 0 1px 2px 0 rgba(27, 79, 114, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(27, 79, 114, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(27, 79, 114, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(27, 79, 114, 0.1);
+    --gradient-primary: linear-gradient(135deg, #5DADE2 0%, #3498DB 50%, #2E86AB 100%);
+    --gradient-secondary: linear-gradient(135deg, #3498DB 0%, #1B4F72 100%);
+    --gradient-accent: linear-gradient(135deg, #5DADE2 0%, #3498DB 100%);
 }
 
 body {
@@ -72,8 +74,9 @@ body {
     text-decoration: none;
 }
 
-.nav-logo i {
-    font-size: 1.8rem;
+.nav-logo .logo-icon {
+    width: 32px;
+    height: 32px;
 }
 
 .nav-menu {
@@ -113,7 +116,7 @@ body {
 /* Hero Section */
 .hero {
     padding: 120px 0 80px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--gradient-primary);
     color: white;
     position: relative;
     overflow: hidden;
@@ -163,7 +166,7 @@ body {
 }
 
 .gradient-text {
-    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    background: linear-gradient(135deg, #5DADE2, #3498DB);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -203,7 +206,7 @@ body {
 }
 
 .btn-primary:hover {
-    background: #d97706;
+    background: var(--primary-color);
     transform: translateY(-2px);
     box-shadow: var(--shadow-xl);
 }
@@ -232,7 +235,7 @@ body {
 .stat-number {
     font-size: 2rem;
     font-weight: 700;
-    color: var(--accent-color);
+    color: var(--primary-light);
 }
 
 .stat-label {
@@ -435,7 +438,7 @@ section {
 }
 
 .demo-feature i {
-    color: var(--secondary-color);
+    color: var(--primary-color);
     font-size: 1.25rem;
 }
 
@@ -533,7 +536,7 @@ section {
 }
 
 .pricing-feature i {
-    color: var(--secondary-color);
+    color: var(--primary-color);
 }
 
 .pricing-actions {
@@ -619,8 +622,10 @@ section {
     margin-bottom: 1rem;
 }
 
-.footer-logo i {
-    color: var(--primary-color);
+.footer-logo .logo-icon {
+    width: 28px;
+    height: 28px;
+    filter: brightness(0) invert(1);
 }
 
 .footer-description {
