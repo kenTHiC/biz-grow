@@ -12,7 +12,7 @@
 
 **A modern, responsive business analytics dashboard built with React, featuring real-time data visualization, customer management, and financial tracking.**
 
-[🚀 Live Demo](https://bizgow-app.netlify.app/dashboard) • [🐛 Report Bug](../../issues) • [✨ Request Feature](../../issues)
+[🚀 Live Demo](https://bizgow-app.netlify.app) • [🐛 Report Bug](../../issues) • [✨ Request Feature](../../issues)
 
 </div>
 
