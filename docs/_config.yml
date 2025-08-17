@@ -1,0 +1,73 @@
+# GitHub Pages Configuration for BizGrow
+title: "BizGrow - Business Analytics Dashboard"
+description: "Modern business analytics dashboard built with React. Track revenue, manage customers, and visualize your business data with beautiful charts."
+url: "https://kenthic.github.io"
+baseurl: "/biz-grow"
+
+# Author information
+author:
+  name: "kenTHiC"
+  email: "bizgrowapp@gmail.com"
+  url: "https://github.com/kenthic"
+
+# Social links
+social:
+  github: "kenthic/biz-grow"
+  discord: "https://discord.gg/s27WGufPgp"
+  email: "bizgrowapp@gmail.com"
+
+# SEO settings
+lang: "en"
+timezone: "UTC"
+
+# GitHub Pages settings
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Exclude files from processing
+exclude:
+  - README.md
+  - LICENSE
+  - CONTRIBUTING.md
+  - CHANGELOG.md
+  - DEPLOYMENT.md
+  - node_modules/
+  - package.json
+  - package-lock.json
+  - src/
+  - public/
+  - dist/
+  - .gitignore
+  - .github/
+
+# Include files
+include:
+  - _redirects
+
+# Markdown settings
+markdown: kramdown
+highlighter: rouge
+
+# Sass settings
+sass:
+  style: compressed
+
+# Collections (if needed for future blog posts)
+collections:
+  posts:
+    output: true
+    permalink: /blog/:year/:month/:day/:title/
+
+# Default front matter
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"

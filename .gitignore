@@ -174,3 +174,6 @@ tramp
 /public/uploads/
 /storage/
 .env.backup
+
+# Deployed App
+dist/

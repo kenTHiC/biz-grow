@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BizGrow - Modern business analytics dashboard built with React. Track revenue, manage customers, and visualize your business data with beautiful charts.">
+    <meta name="keywords" content="business analytics, dashboard, react, charts, revenue tracking, customer management, data visualization">
+    <meta name="author" content="kenthic">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kenthic.github.io/biz-grow/">
+    <meta property="og:title" content="BizGrow - Business Analytics Dashboard">
+    <meta property="og:description" content="Modern business analytics dashboard built with React. Track revenue, manage customers, and visualize your business data.">
+    <meta property="og:image" content="https://kenthic.github.io/biz-grow/assets/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://kenthic.github.io/biz-grow/">
+    <meta property="twitter:title" content="BizGrow - Business Analytics Dashboard">
+    <meta property="twitter:description" content="Modern business analytics dashboard built with React. Track revenue, manage customers, and visualize your business data.">
+    <meta property="twitter:image" content="https://kenthic.github.io/biz-grow/assets/og-image.png">
+
+    <title>BizGrow - Business Analytics Dashboard</title>
+    <link rel="icon" href="./assets/favicon.png" type="image/png">
+    <link rel="stylesheet" href="./styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-chart-line"></i>
+                <span>BizGrow</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#demo" class="nav-link">Demo</a>
+                <a href="#pricing" class="nav-link">Pricing</a>
+                <a href="#contact" class="nav-link">Contact</a>
+                <a href="https://github.com/kenthic/biz-grow" class="nav-link" target="_blank">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-rocket"></i>
+                    <span>Open Source & Free</span>
+                </div>
+                <h1 class="hero-title">
+                    Transform Your Business Data Into 
+                    <span class="gradient-text">Actionable Insights</span>
+                </h1>
+                <p class="hero-description">
+                    BizGrow is a modern, responsive business analytics dashboard built with React. 
+                    Track revenue, manage customers, and visualize your business performance with beautiful, interactive charts.
+                </p>
+                <div class="hero-buttons">
+                    <a href="https://bizgow-app.netlify.app" class="btn btn-primary" target="_blank">
+                        <i class="fas fa-play"></i>
+                        Try Live Demo
+                    </a>
+                    <a href="https://github.com/kenthic/biz-grow" class="btn btn-secondary" target="_blank">
+                        <i class="fab fa-github"></i>
+                        View on GitHub
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Open Source</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">0$</div>
+                        <div class="stat-label">Cost</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">5min</div>
+                        <div class="stat-label">Setup Time</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="dashboard-preview">
+                    <img src="./assets/dashboard-preview.png" alt="BizGrow Dashboard Preview" class="dashboard-image">
+                    <div class="floating-card card-1">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Revenue Analytics</span>
+                    </div>
+                    <div class="floating-card card-2">
+                        <i class="fas fa-users"></i>
+                        <span>Customer Management</span>
+                    </div>
+                    <div class="floating-card card-3">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Data Visualization</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Powerful Features for Modern Businesses</h2>
+                <p class="section-description">
+                    Everything you need to track, analyze, and grow your business in one beautiful dashboard.
+                </p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Real-time Analytics</h3>
+                    <p class="feature-description">
+                        Track your business performance with real-time KPI cards, interactive charts, and comprehensive analytics.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="feature-title">Customer Management</h3>
+                    <p class="feature-description">
+                        Manage your customer relationships with complete CRUD operations, status tracking, and value analysis.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <h3 class="feature-title">Financial Tracking</h3>
+                    <p class="feature-description">
+                        Monitor revenue and expenses with detailed categorization, transaction history, and profit analysis.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <h3 class="feature-title">Data Visualization</h3>
+                    <p class="feature-description">
+                        Beautiful, interactive charts powered by Recharts with customizable views and export functionality.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Responsive Design</h3>
+                    <p class="feature-description">
+                        Works seamlessly on desktop, tablet, and mobile devices with modern glassmorphism UI effects.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h3 class="feature-title">Data Export</h3>
+                    <p class="feature-description">
+                        Export your business data in JSON format for backup, analysis, or integration with other tools.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="demo">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">See BizGrow in Action</h2>
+                <p class="section-description">
+                    Watch how BizGrow can transform your business data management and analytics workflow.
+                </p>
+            </div>
+            <div class="demo-content">
+                <div class="video-container">
+                    <div class="video-placeholder">
+                        <i class="fas fa-play-circle"></i>
+                        <p>Marketing Video Coming Soon</p>
+                        <small>Click to watch the full demo</small>
+                    </div>
+                </div>
+                <div class="demo-features">
+                    <div class="demo-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Interactive Dashboard Overview</span>
+                    </div>
+                    <div class="demo-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Customer Management Workflow</span>
+                    </div>
+                    <div class="demo-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Financial Data Entry & Analysis</span>
+                    </div>
+                    <div class="demo-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Advanced Analytics & Reporting</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section class="tech-stack">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Built with Modern Technologies</h2>
+                <p class="section-description">
+                    BizGrow is built using cutting-edge technologies for performance, reliability, and developer experience.
+                </p>
+            </div>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <i class="fab fa-react"></i>
+                    <span>React 18</span>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-bolt"></i>
+                    <span>Vite</span>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-paint-brush"></i>
+                    <span>Tailwind CSS</span>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Recharts</span>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-magic"></i>
+                    <span>Framer Motion</span>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-route"></i>
+                    <span>React Router</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Simple, Transparent Pricing</h2>
+                <p class="section-description">
+                    BizGrow is completely free and open source. No hidden costs, no subscriptions.
+                </p>
+            </div>
+            <div class="pricing-card">
+                <div class="pricing-header">
+                    <h3 class="pricing-title">Open Source</h3>
+                    <div class="pricing-price">
+                        <span class="price">$0</span>
+                        <span class="period">Forever</span>
+                    </div>
+                </div>
+                <div class="pricing-features">
+                    <div class="pricing-feature">
+                        <i class="fas fa-check"></i>
+                        <span>Complete dashboard functionality</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <i class="fas fa-check"></i>
+                        <span>Customer & financial management</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <i class="fas fa-check"></i>
+                        <span>Advanced analytics & charts</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <i class="fas fa-check"></i>
+                        <span>Data export functionality</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <i class="fas fa-check"></i>
+                        <span>Community support</span>
+                    </div>
+                    <div class="pricing-feature">
+                        <i class="fas fa-check"></i>
+                        <span>Source code access</span>
+                    </div>
+                </div>
+                <div class="pricing-actions">
+                    <a href="https://bizgow-app.netlify.app" class="btn btn-primary" target="_blank">
+                        Get Started Free
+                    </a>
+                    <a href="https://github.com/kenthic/biz-grow" class="btn btn-secondary" target="_blank">
+                        Download Source
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Get in Touch</h2>
+                <p class="section-description">
+                    Have questions? Need support? Want to contribute? We'd love to hear from you!
+                </p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <i class="fas fa-envelope"></i>
+                    <h3>Email Support</h3>
+                    <p>Get help with setup and usage</p>
+                    <a href="mailto:bizgrowapp@gmail.com">bizgrowapp@gmail.com</a>
+                </div>
+                <div class="contact-card">
+                    <i class="fab fa-discord"></i>
+                    <h3>Discord Community</h3>
+                    <p>Join our active community</p>
+                    <a href="https://discord.gg/s27WGufPgp" target="_blank">Join Discord</a>
+                </div>
+                <div class="contact-card">
+                    <i class="fab fa-github"></i>
+                    <h3>GitHub Issues</h3>
+                    <p>Report bugs and request features</p>
+                    <a href="https://github.com/kenthic/biz-grow/issues" target="_blank">Open Issue</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <i class="fas fa-chart-line"></i>
+                        <span>BizGrow</span>
+                    </div>
+                    <p class="footer-description">
+                        Modern business analytics dashboard for the next generation of entrepreneurs.
+                    </p>
+                    <div class="footer-social">
+                        <a href="https://github.com/kenthic/biz-grow" target="_blank">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://discord.gg/s27WGufPgp" target="_blank">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="mailto:bizgrowapp@gmail.com">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="#features">Features</a>
+                        <a href="#demo">Demo</a>
+                        <a href="https://bizgow-app.netlify.app" target="_blank">Live App</a>
+                        <a href="#pricing">Pricing</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Developers</h4>
+                        <a href="https://github.com/kenthic/biz-grow" target="_blank">GitHub</a>
+                        <a href="https://github.com/kenthic/biz-grow/blob/main/README.md" target="_blank">Documentation</a>
+                        <a href="https://github.com/kenthic/biz-grow/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a>
+                        <a href="https://github.com/kenthic/biz-grow/issues" target="_blank">Issues</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Support</h4>
+                        <a href="#contact">Contact</a>
+                        <a href="https://discord.gg/s27WGufPgp" target="_blank">Discord</a>
+                        <a href="mailto:bizgrowapp@gmail.com">Email</a>
+                        <a href="https://github.com/kenthic/biz-grow/blob/main/README.md#-support" target="_blank">Help Center</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 BizGrow. Made with ❤️ by kenTHiC. Licensed under MIT.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./scripts/main.js"></script>
+</body>
+</html>

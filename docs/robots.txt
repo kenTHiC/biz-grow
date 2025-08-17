@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://kenthic.github.io/biz-grow/sitemap.xml
+
+# Disallow certain paths (if any)
+# Disallow: /private/
