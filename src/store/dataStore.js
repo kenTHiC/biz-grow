@@ -128,6 +128,40 @@ const fixNullIds = (items, itemType) => {
   return fixedItems;
 };
 
+// Data migration function to ensure unique IDs (fix duplicates)
+const fixDuplicateIds = (items, itemType) => {
+  console.log(`Checking ${itemType} for duplicate IDs...`);
+  const seen = new Set();
+  let changed = false;
+
+  // Determine next available ID
+  const validIds = items
+    .map(item => item.id)
+    .filter(id => id !== null && id !== undefined && !isNaN(id))
+    .map(id => parseInt(id));
+  let nextId = validIds.length > 0 ? Math.max(...validIds) + 1 : 1;
+
+  const fixed = items.map(item => {
+    const rawId = item.id;
+    const idNum = parseInt(rawId);
+    if (isNaN(idNum) || seen.has(idNum)) {
+      const newItem = { ...item, id: nextId++ };
+      changed = true;
+      console.log(`Reassigning duplicate/invalid ${itemType} ID ${rawId} -> ${newItem.id}`);
+      seen.add(newItem.id);
+      return newItem;
+    }
+    seen.add(idNum);
+    return { ...item, id: idNum };
+  });
+
+  if (changed) {
+    console.log(`${itemType}: Duplicate IDs fixed. IDs:`, fixed.map(i => i.id));
+  }
+
+  return fixed;
+};
+
 // Enhanced Data Store Class
 class DataStore {
   constructor() {
@@ -139,10 +173,10 @@ class DataStore {
       autoBackup: true
     });
 
-    // Load data and fix null IDs
-    this.customers = fixNullIds(loadFromStorage(STORAGE_KEYS.CUSTOMERS, []), 'customers');
-    this.revenues = fixNullIds(loadFromStorage(STORAGE_KEYS.REVENUES, []), 'revenues');
-    this.expenses = fixNullIds(loadFromStorage(STORAGE_KEYS.EXPENSES, []), 'expenses');
+    // Load data and fix null/duplicate IDs
+    this.customers = fixDuplicateIds(fixNullIds(loadFromStorage(STORAGE_KEYS.CUSTOMERS, []), 'customers'), 'customers');
+    this.revenues = fixDuplicateIds(fixNullIds(loadFromStorage(STORAGE_KEYS.REVENUES, []), 'revenues'), 'revenues');
+    this.expenses = fixDuplicateIds(fixNullIds(loadFromStorage(STORAGE_KEYS.EXPENSES, []), 'expenses'), 'expenses');
 
     // Save fixed data back to storage
     saveToStorage(STORAGE_KEYS.CUSTOMERS, this.customers);
@@ -473,9 +507,12 @@ class DataStore {
 
       // Import revenues
       if (data.revenues && Array.isArray(data.revenues)) {
+        // Assign fresh unique IDs to avoid duplicates
+        const existing = this.revenues;
+        let nextId = existing.length ? Math.max(...existing.map(r => parseInt(r.id) || 0)) + 1 : 1;
         const importedRevenues = data.revenues.map(revenue => ({
           ...revenue,
-          id: merge ? generateId([...this.revenues, ...data.revenues]) : revenue.id || generateId(this.revenues),
+          id: nextId++,
           date: revenue.date || format(new Date(), 'yyyy-MM-dd'),
           amount: parseFloat(revenue.amount) || 0
         }));
@@ -491,9 +528,12 @@ class DataStore {
 
       // Import expenses
       if (data.expenses && Array.isArray(data.expenses)) {
+        // Assign fresh unique IDs to avoid duplicates
+        const existingE = this.expenses;
+        let nextEId = existingE.length ? Math.max(...existingE.map(e => parseInt(e.id) || 0)) + 1 : 1;
         const importedExpenses = data.expenses.map(expense => ({
           ...expense,
-          id: merge ? generateId([...this.expenses, ...data.expenses]) : expense.id || generateId(this.expenses),
+          id: nextEId++,
           date: expense.date || format(new Date(), 'yyyy-MM-dd'),
           amount: parseFloat(expense.amount) || 0
         }));

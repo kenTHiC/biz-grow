@@ -26,7 +26,16 @@ export default function Reports() {
 
   // Debug selectedItems changes
   useEffect(() => {
-    console.log('🔍 selectedItems changed:', selectedItems);
+    console.log('🔍 selectedItems STATE CHANGED:', JSON.stringify(selectedItems));
+    console.log('🔍 selectedItems length:', selectedItems.length);
+    console.log('🔍 selectedItems type:', typeof selectedItems);
+    console.log('🔍 selectedItems is array:', Array.isArray(selectedItems));
+
+    // Check if this is an unexpected change
+    if (selectedItems.length > 1) {
+      console.warn('⚠️ MULTIPLE ITEMS SELECTED - This might be the bug!');
+      console.trace('Multiple selection call stack');
+    }
   }, [selectedItems]);
 
   const loadData = async () => {
@@ -173,31 +182,42 @@ export default function Reports() {
   };
 
   const toggleItemSelection = (id) => {
-    console.log('☑️ CHECKBOX CLICKED for ID:', id);
-    console.log('Current selected items before toggle:', selectedItems);
-    console.log('Item is currently selected:', selectedItems.includes(id));
+    // Normalize IDs to strings to avoid 1 vs '1' mismatches
+    const sid = String(id);
+    console.log('☑️ CHECKBOX CLICKED for ID:', sid);
+    console.log('Current selected items before toggle:', JSON.stringify(selectedItems));
 
-    setSelectedItems(prev => {
-      let newSelection;
+    setSelectedItems(prevSelected => {
+      // Use a Set to guarantee uniqueness and avoid duplicates under StrictMode
+      const set = new Set(prevSelected.map(String));
+      console.log('Inside setSelectedItems - current Set:', Array.from(set));
 
-      if (prev.includes(id)) {
-        // Remove from selection
-        newSelection = prev.filter(itemId => itemId !== id);
-        console.log('Removing item from selection');
+      if (set.has(sid)) {
+        set.delete(sid);
+        console.log('Removed from selection:', sid);
       } else {
-        // Add to selection
-        newSelection = [...prev, id];
-        console.log('Adding item to selection');
+        set.add(sid);
+        console.log('Added to selection:', sid);
       }
 
-      console.log('New selected items after toggle:', newSelection);
-      return newSelection;
+      const next = Array.from(set);
+      console.log('Next selection (unique):', next);
+      return next;
     });
   };
 
-  const selectAllItems = () => {
-    console.log('🔘 SELECT ALL BUTTON CLICKED - This should only appear when clicking the Select All button');
+  const selectAllItems = (event) => {
+    console.log('🔘 SELECT ALL FUNCTION CALLED');
+    console.log('Event object:', event);
     console.trace('selectAllItems call stack'); // This will show us where it's being called from
+
+    // Only proceed if this was called by a real button click
+    if (!event || !event.target) {
+      console.error('❌ selectAllItems called without proper event - BLOCKING EXECUTION');
+      return;
+    }
+
+    console.log('✅ selectAllItems called with proper event - proceeding');
 
     const currentItems = activeTab === 'revenues' ? revenues : expenses;
     const allIds = currentItems.map(item => item.id);
@@ -554,21 +574,16 @@ export default function Reports() {
                         <input
                           type="checkbox"
                           id={`checkbox-${item.id}`}
-                          checked={selectedItems.includes(item.id)}
-                          onChange={(e) => {
-                            console.log(`📋 Checkbox ${item.id} onChange triggered`);
-                            console.log('Event target checked:', e.target.checked);
-                            console.log('selectedItems.includes(item.id):', selectedItems.includes(item.id));
-                            console.log('Current selectedItems:', selectedItems);
+                          checked={selectedItems.map(String).includes(String(item.id))}
+                          readOnly
+                          onClick={(e) => {
+                            console.log(`�️ Checkbox ${item.id} CLICKED`);
+                            console.log('Checkbox checked state before click:', selectedItems.includes(item.id));
+                            console.log('Current selectedItems before click:', JSON.stringify(selectedItems));
                             e.stopPropagation();
-                            e.preventDefault();
                             toggleItemSelection(item.id);
                           }}
-                          onClick={(e) => {
-                            console.log(`🖱️ Checkbox ${item.id} onClick triggered`);
-                            e.stopPropagation();
-                          }}
-                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
                         />
                       </div>
                     )}
