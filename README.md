@@ -50,8 +50,8 @@
 
 - ✅ **Multi-Selection System** - Bulk operations with checkboxes and "Select All" functionality
 - 🎨 **Professional UI Modals** - Custom confirmation dialogs replacing browser alerts
-- � **Critical Bug Fixes** - Resolved duplicate ID issues and selection state problems
-- � **Enhanced Performance** - Set-based selection logic for guaranteed uniqueness
+- 🪲 **Critical Bug Fixes** - Resolved duplicate ID issues and selection state problems
+- ⏱ **Enhanced Performance** - Set-based selection logic for guaranteed uniqueness
 - 📊 **Improved Data Management** - Better CSV import detection and error handling
 - 🎯 **Better User Experience** - Toast notifications and non-blocking interactions
 - 🛠️ **Code Quality** - Comprehensive refactoring and optimization improvements
@@ -542,12 +542,16 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### **🎉 BizGrow v1.3.3 - World-Class Business Analytics**
 
-**Built with ❤️ by kenTHiC**
+**Built with ❤️ by**
+
+[![GitHub](https://img.shields.io/badge/GitHub-kenTHiC-181717?style=flat&logo=github)](https://github.com/kenTHiC)
 
 [![GitHub stars](https://img.shields.io/github/stars/kenthic/biz-grow?style=social)](../../stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/kenthic/biz-grow?style=social)](../../network/members)
 [![GitHub watchers](https://img.shields.io/github/watchers/kenthic/biz-grow?style=social)](../../watchers)
 
-**[🚀 Try Live Demo](https://bizgow-app.netlify.app) • [📖 Read Docs](docs/) • [💬 Join Discord](https://discord.gg/s27WGufPgp)**
+**[🚀 Try Live Demo](https://bizgow-app.netlify.app) • [📖 Read Docs](docs/)**
+
+[![Discord](https://img.shields.io/badge/Discord-Community-5865F2?style=for-the-badge&logo=discord)](https://discord.gg/s27WGufPgp)
 
 </div>
