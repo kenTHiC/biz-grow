@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2024-08-18
+
+### 🔧 **CRITICAL BUG FIXES**
+- **FIXED**: Revenue and expense delete functionality - items are now properly removed from lists
+- **FIXED**: Customer import issues - all records now import correctly (was only importing 1 out of multiple)
+- **FIXED**: Revenue CSV import detection - no longer incorrectly creates customers instead of revenues
+- **FIXED**: Customer growth chart direction - now displays left-to-right chronologically
+- **FIXED**: Customer update false duplicate errors - can now update status without email conflicts
+- **FIXED**: React key conflicts and console errors that could cause UI instability
+- **FIXED**: Data persistence after import operations - all data now saves correctly to localStorage
+
+### ✨ **NEW FEATURES**
+- **Bulk Delete Functionality** - Select and delete multiple revenues/expenses at once
+- **Multi-Select Interface** - Checkboxes and selection controls for bulk operations
+- **Configurable Time Periods** - JSON-based time period configuration system
+- **Enhanced Import System** - Better data validation, error handling, and logging
+- **TimePeriodManager Utility** - Comprehensive date range management system
+
+### 🎨 **IMPROVEMENTS**
+- Enhanced CSV data type detection (revenues vs customers vs expenses)
+- Improved duplicate prevention during data merging
+- Better form validation with fallback values
+- Enhanced user feedback with confirmation dialogs and success messages
+- Comprehensive logging for debugging import/delete operations
+- Better error handling throughout the application
+
+### 🧹 **MAINTENANCE**
+- Removed unused test files and debug components for cleaner codebase
+- Updated React Router configuration to eliminate warnings
+- Repository cleanup and optimization for production deployment
+- Enhanced code organization and documentation
+
+---
+
 ## [1.1.0] - 2025-08-18
 
 ### 🎉 Major Update - Enterprise-Grade Data Management & Analytics

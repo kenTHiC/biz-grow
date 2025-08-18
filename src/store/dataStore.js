@@ -40,9 +40,27 @@ const saveToStorage = (key, data) => {
 };
 
 const generateId = (existingItems) => {
-  return existingItems.length > 0
-    ? Math.max(...existingItems.map(item => item.id)) + 1
-    : 1;
+  if (existingItems.length === 0) {
+    return 1;
+  }
+
+  // Filter out items with null or invalid IDs and get valid IDs
+  const validIds = existingItems
+    .map(item => item.id)
+    .filter(id => id !== null && id !== undefined && !isNaN(id))
+    .map(id => parseInt(id));
+
+  console.log('generateId: existingItems count:', existingItems.length);
+  console.log('generateId: validIds:', validIds);
+
+  if (validIds.length === 0) {
+    console.log('generateId: No valid IDs found, starting from 1');
+    return 1;
+  }
+
+  const nextId = Math.max(...validIds) + 1;
+  console.log('generateId: Generated ID:', nextId);
+  return nextId;
 };
 
 const createAutoBackup = () => {
@@ -77,6 +95,39 @@ const clearAllData = () => {
   });
 };
 
+// Data migration function to fix null IDs
+const fixNullIds = (items, itemType) => {
+  console.log(`Checking ${itemType} for null IDs...`);
+  let hasNullIds = false;
+  let nextId = 1;
+
+  // Find the highest valid ID first
+  const validIds = items
+    .map(item => item.id)
+    .filter(id => id !== null && id !== undefined && !isNaN(id))
+    .map(id => parseInt(id));
+
+  if (validIds.length > 0) {
+    nextId = Math.max(...validIds) + 1;
+  }
+
+  // Fix items with null IDs
+  const fixedItems = items.map(item => {
+    if (item.id === null || item.id === undefined || isNaN(item.id)) {
+      console.log(`Fixing ${itemType} with null ID:`, item);
+      hasNullIds = true;
+      return { ...item, id: nextId++ };
+    }
+    return item;
+  });
+
+  if (hasNullIds) {
+    console.log(`Fixed ${itemType} with null IDs. New data:`, fixedItems.map(i => ({ id: i.id, amount: i.amount })));
+  }
+
+  return fixedItems;
+};
+
 // Enhanced Data Store Class
 class DataStore {
   constructor() {
@@ -88,10 +139,15 @@ class DataStore {
       autoBackup: true
     });
 
-    // Always start with empty arrays - no sample data
-    this.customers = loadFromStorage(STORAGE_KEYS.CUSTOMERS, []);
-    this.revenues = loadFromStorage(STORAGE_KEYS.REVENUES, []);
-    this.expenses = loadFromStorage(STORAGE_KEYS.EXPENSES, []);
+    // Load data and fix null IDs
+    this.customers = fixNullIds(loadFromStorage(STORAGE_KEYS.CUSTOMERS, []), 'customers');
+    this.revenues = fixNullIds(loadFromStorage(STORAGE_KEYS.REVENUES, []), 'revenues');
+    this.expenses = fixNullIds(loadFromStorage(STORAGE_KEYS.EXPENSES, []), 'expenses');
+
+    // Save fixed data back to storage
+    saveToStorage(STORAGE_KEYS.CUSTOMERS, this.customers);
+    saveToStorage(STORAGE_KEYS.REVENUES, this.revenues);
+    saveToStorage(STORAGE_KEYS.EXPENSES, this.expenses);
 
     // Mark user as returning after first load
     if (this.isFirstTime) {
@@ -223,12 +279,24 @@ class DataStore {
   }
 
   deleteRevenue(id) {
+    console.log('DataStore: Attempting to delete revenue with ID:', id);
+    console.log('Current revenues count:', this.revenues.length);
+    console.log('Current revenues:', this.revenues.map(r => ({ id: r.id, amount: r.amount })));
+
     const index = this.revenues.findIndex(r => r.id === parseInt(id));
+    console.log('Found revenue at index:', index);
+
     if (index !== -1) {
       const deleted = this.revenues.splice(index, 1)[0];
+      console.log('Deleted revenue:', deleted);
+      console.log('Remaining revenues count:', this.revenues.length);
+
       saveToStorage(STORAGE_KEYS.REVENUES, this.revenues);
+      console.log('Revenue deleted and saved to storage');
       return deleted;
     }
+
+    console.log('Revenue not found for deletion');
     return null;
   }
 
@@ -263,12 +331,24 @@ class DataStore {
   }
 
   deleteExpense(id) {
+    console.log('DataStore: Attempting to delete expense with ID:', id);
+    console.log('Current expenses count:', this.expenses.length);
+    console.log('Current expenses:', this.expenses.map(e => ({ id: e.id, amount: e.amount })));
+
     const index = this.expenses.findIndex(e => e.id === parseInt(id));
+    console.log('Found expense at index:', index);
+
     if (index !== -1) {
       const deleted = this.expenses.splice(index, 1)[0];
+      console.log('Deleted expense:', deleted);
+      console.log('Remaining expenses count:', this.expenses.length);
+
       saveToStorage(STORAGE_KEYS.EXPENSES, this.expenses);
+      console.log('Expense deleted and saved to storage');
       return deleted;
     }
+
+    console.log('Expense not found for deletion');
     return null;
   }
 

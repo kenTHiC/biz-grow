@@ -4,9 +4,11 @@ import { FileSpreadsheet, Plus, Edit, Trash2, DollarSign, TrendingDown, Calendar
 import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import { useToast } from "@/components/ui/toast";
 import CategoryManager from '../utils/categories';
 
 export default function Reports() {
+  const { toast } = useToast();
   const [revenues, setRevenues] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [customers, setCustomers] = useState([]);
@@ -15,12 +17,20 @@ export default function Reports() {
   const [showForm, setShowForm] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [formData, setFormData] = useState({});
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
 
   useEffect(() => {
     loadData();
   }, []);
 
+  // Debug selectedItems changes
+  useEffect(() => {
+    console.log('🔍 selectedItems changed:', selectedItems);
+  }, [selectedItems]);
+
   const loadData = async () => {
+    console.log('Reports: Loading data...');
     setIsLoading(true);
     try {
       const [revenueData, expenseData, customerData] = await Promise.all([
@@ -28,6 +38,13 @@ export default function Reports() {
         Expense.list(),
         Customer.list()
       ]);
+
+      console.log('Reports: Loaded data:', {
+        revenues: revenueData.length,
+        expenses: expenseData.length,
+        customers: customerData.length
+      });
+
       setRevenues(revenueData);
       setExpenses(expenseData);
       setCustomers(customerData);
@@ -67,10 +84,16 @@ export default function Reports() {
   };
 
   const handleEdit = (item, type) => {
+    console.log('🔧 EDIT CLICKED:', { item, type });
+    console.log('Setting editing item:', item);
+    console.log('Setting form data:', item);
+
     setEditingItem(item);
     setFormData(item);
     setActiveTab(type === 'revenue' ? 'revenues' : 'expenses');
     setShowForm(true);
+
+    console.log('Edit form should now be visible');
   };
 
   const handleSubmit = async (e) => {
@@ -97,17 +120,36 @@ export default function Reports() {
   };
 
   const handleDelete = async (id, type) => {
+    console.log('🗑️ DELETE CLICKED:', { id, type });
+    console.log(`Attempting to delete ${type} with ID:`, id);
+
     if (window.confirm(`Are you sure you want to delete this ${type}?`)) {
+      console.log('User confirmed deletion');
       try {
+        let result;
         if (type === 'revenue') {
-          await Revenue.delete(id);
+          console.log('Calling Revenue.delete...');
+          result = await Revenue.delete(id);
+          console.log('Revenue delete result:', result);
         } else {
-          await Expense.delete(id);
+          console.log('Calling Expense.delete...');
+          result = await Expense.delete(id);
+          console.log('Expense delete result:', result);
         }
+
+        console.log('Reloading data after delete...');
         await loadData();
+        console.log('Data reloaded successfully');
+
+        // Show success toast
+        toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} deleted successfully!`);
+
       } catch (error) {
         console.error('Error deleting item:', error);
+        toast.error(`Error deleting ${type}: ${error.message}`);
       }
+    } else {
+      console.log('User cancelled deletion');
     }
   };
 
@@ -117,8 +159,116 @@ export default function Reports() {
     setShowForm(false);
   };
 
-  const getCategoryColor = (category, type = 'expense') => {
-    // Determine type based on category if not provided
+  // Tab change handler
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setSelectedItems([]);
+    setIsSelectionMode(false);
+  };
+
+  // Bulk delete functionality
+  const toggleSelectionMode = () => {
+    setIsSelectionMode(!isSelectionMode);
+    setSelectedItems([]);
+  };
+
+  const toggleItemSelection = (id) => {
+    console.log('☑️ CHECKBOX CLICKED for ID:', id);
+    console.log('Current selected items before toggle:', selectedItems);
+    console.log('Item is currently selected:', selectedItems.includes(id));
+
+    setSelectedItems(prev => {
+      let newSelection;
+
+      if (prev.includes(id)) {
+        // Remove from selection
+        newSelection = prev.filter(itemId => itemId !== id);
+        console.log('Removing item from selection');
+      } else {
+        // Add to selection
+        newSelection = [...prev, id];
+        console.log('Adding item to selection');
+      }
+
+      console.log('New selected items after toggle:', newSelection);
+      return newSelection;
+    });
+  };
+
+  const selectAllItems = () => {
+    console.log('🔘 SELECT ALL BUTTON CLICKED - This should only appear when clicking the Select All button');
+    console.trace('selectAllItems call stack'); // This will show us where it's being called from
+
+    const currentItems = activeTab === 'revenues' ? revenues : expenses;
+    const allIds = currentItems.map(item => item.id);
+    console.log('All available IDs:', allIds);
+    console.log('Currently selected:', selectedItems);
+    console.log('Current selection length:', selectedItems.length);
+    console.log('All items length:', allIds.length);
+
+    const newSelection = selectedItems.length === allIds.length ? [] : allIds;
+    console.log('New selection will be:', newSelection);
+
+    setSelectedItems(newSelection);
+  };
+
+  const handleBulkDelete = async () => {
+    console.log('🗑️ BULK DELETE CLICKED');
+    console.log('Selected items:', selectedItems);
+    console.log('Active tab:', activeTab);
+
+    if (selectedItems.length === 0) {
+      console.log('No items selected');
+      toast.warning('Please select items to delete');
+      return;
+    }
+
+    const itemType = activeTab === 'revenues' ? 'revenue' : 'expense';
+    const confirmMessage = `Are you sure you want to delete ${selectedItems.length} ${itemType}${selectedItems.length > 1 ? 's' : ''}?`;
+
+    console.log('Showing confirmation dialog:', confirmMessage);
+
+    if (window.confirm(confirmMessage)) {
+      console.log('User confirmed bulk deletion');
+      try {
+        console.log(`Bulk deleting ${selectedItems.length} ${itemType}s:`, selectedItems);
+
+        // Delete all selected items
+        const deletePromises = selectedItems.map(id => {
+          console.log(`Creating delete promise for ID: ${id}`);
+          if (activeTab === 'revenues') {
+            return Revenue.delete(id);
+          } else {
+            return Expense.delete(id);
+          }
+        });
+
+        console.log('Executing bulk delete promises...');
+        const deleteResults = await Promise.all(deletePromises);
+        console.log('Bulk delete results:', deleteResults);
+
+        console.log('Bulk delete completed, reloading data...');
+        await loadData();
+
+        // Reset selection
+        console.log('Resetting selection state...');
+        const deletedCount = selectedItems.length;
+        setSelectedItems([]);
+        setIsSelectionMode(false);
+
+        toast.success(`Successfully deleted ${deletedCount} ${itemType}${deletedCount > 1 ? 's' : ''}!`);
+
+      } catch (error) {
+        console.error('Error in bulk delete:', error);
+        toast.error(`Error deleting items: ${error.message}`);
+      }
+    } else {
+      console.log('User cancelled bulk deletion');
+    }
+  };
+
+  const getCategoryColor = (category) => {
+    // Determine type based on category
     const revenueCategories = Object.keys(CategoryManager.getCategories('revenue'));
     const actualType = revenueCategories.includes(category) ? 'revenue' : 'expense';
 
@@ -166,6 +316,41 @@ export default function Reports() {
                 <Plus className="w-4 h-4" />
                 Add Expense
               </button>
+
+              {/* Bulk Delete Controls */}
+              <div className="flex gap-2 border-l pl-2 ml-2">
+                <button
+                  onClick={toggleSelectionMode}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 font-medium ${
+                    isSelectionMode
+                      ? 'bg-blue-600 text-white hover:bg-blue-700'
+                      : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+                  }`}
+                >
+                  {isSelectionMode ? 'Cancel Selection' : 'Select Multiple'}
+                </button>
+
+                {isSelectionMode && (
+                  <>
+                    <button
+                      onClick={selectAllItems}
+                      className="flex items-center gap-2 px-4 py-2 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors duration-200 font-medium"
+                    >
+                      {selectedItems.length === (activeTab === 'revenues' ? revenues : expenses).length ? 'Deselect All' : 'Select All'}
+                    </button>
+
+                    {selectedItems.length > 0 && (
+                      <button
+                        onClick={handleBulkDelete}
+                        className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Delete Selected ({selectedItems.length})
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </motion.div>
@@ -173,7 +358,7 @@ export default function Reports() {
         {/* Tabs */}
         <div className="flex space-x-1 bg-slate-100 p-1 rounded-lg">
           <button
-            onClick={() => setActiveTab('revenues')}
+            onClick={() => handleTabChange('revenues')}
             className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors duration-200 ${
               activeTab === 'revenues'
                 ? 'bg-white text-slate-900 shadow-sm'
@@ -183,7 +368,7 @@ export default function Reports() {
             Revenues ({revenues.length})
           </button>
           <button
-            onClick={() => setActiveTab('expenses')}
+            onClick={() => handleTabChange('expenses')}
             className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors duration-200 ${
               activeTab === 'expenses'
                 ? 'bg-white text-slate-900 shadow-sm'
@@ -363,6 +548,31 @@ export default function Reports() {
                     transition={{ duration: 0.3, delay: index * 0.05 }}
                     className="flex items-center justify-between p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors duration-200"
                   >
+                    {/* Selection Checkbox */}
+                    {isSelectionMode && (
+                      <div className="mr-3">
+                        <input
+                          type="checkbox"
+                          id={`checkbox-${item.id}`}
+                          checked={selectedItems.includes(item.id)}
+                          onChange={(e) => {
+                            console.log(`📋 Checkbox ${item.id} onChange triggered`);
+                            console.log('Event target checked:', e.target.checked);
+                            console.log('selectedItems.includes(item.id):', selectedItems.includes(item.id));
+                            console.log('Current selectedItems:', selectedItems);
+                            e.stopPropagation();
+                            e.preventDefault();
+                            toggleItemSelection(item.id);
+                          }}
+                          onClick={(e) => {
+                            console.log(`🖱️ Checkbox ${item.id} onClick triggered`);
+                            e.stopPropagation();
+                          }}
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                        />
+                      </div>
+                    )}
+
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <span className="text-lg font-semibold text-slate-900">
@@ -399,13 +609,19 @@ export default function Reports() {
                     </div>
                     <div className="flex gap-1">
                       <button
-                        onClick={() => handleEdit(item, activeTab === 'revenues' ? 'revenue' : 'expense')}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEdit(item, activeTab === 'revenues' ? 'revenue' : 'expense');
+                        }}
                         className="p-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200"
                       >
                         <Edit className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => handleDelete(item.id, activeTab === 'revenues' ? 'revenue' : 'expense')}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(item.id, activeTab === 'revenues' ? 'revenue' : 'expense');
+                        }}
                         className="p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
                       >
                         <Trash2 className="w-4 h-4" />
