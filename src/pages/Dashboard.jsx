@@ -12,7 +12,6 @@ import DataSummaryCards from "../components/dashboard/DataSummaryCards";
 import TrendSparklines from "../components/dashboard/TrendSparklines";
 import CategoryPieChart from "../components/dashboard/CategoryPieChart";
 import DataManager from "../components/DataManager";
-import TestRunner from "../components/TestRunner";
 import dataStore from "../store/dataStore";
 
 export default function Dashboard() {
@@ -26,7 +25,7 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
   const [showDataManager, setShowDataManager] = useState(false);
-  const [showTestRunner, setShowTestRunner] = useState(false);
+
   const [isFirstTime, setIsFirstTime] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
 
@@ -190,14 +189,7 @@ export default function Dashboard() {
               <Database className="w-4 h-4" />
               Manage Data
             </button>
-            {process.env.NODE_ENV === 'development' && (
-              <button
-                onClick={() => setShowTestRunner(true)}
-                className="flex items-center gap-2 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
-              >
-                🧪 Test Suite
-              </button>
-            )}
+
           </div>
         </div>
 
@@ -334,28 +326,31 @@ export default function Dashboard() {
         onDataChange={handleDataChange}
       />
 
-      {/* Test Runner Modal (Development Only) */}
-      {process.env.NODE_ENV === 'development' && (
-        <TestRunner
-          isOpen={showTestRunner}
-          onClose={() => setShowTestRunner(false)}
-        />
-      )}
+
     </div>
   );
 }
 
 function prepareRevenueChartData(revenues) {
   const monthlyData = {};
-  
+
   revenues.forEach(revenue => {
     const month = format(new Date(revenue.date), 'MMM yyyy');
     monthlyData[month] = (monthlyData[month] || 0) + (revenue.amount || 0);
   });
 
   return Object.entries(monthlyData)
-    .map(([period, revenue]) => ({ period, revenue }))
-    .sort((a, b) => new Date(a.period) - new Date(b.period))
+    .map(([period, revenue]) => ({
+      period,
+      revenue,
+      amount: revenue // Add amount alias for consistency
+    }))
+    .sort((a, b) => {
+      // Fix date sorting for "MMM yyyy" format
+      const dateA = new Date(a.period + ' 01');
+      const dateB = new Date(b.period + ' 01');
+      return dateA - dateB;
+    })
     .slice(-12);
 }
 
@@ -375,7 +370,7 @@ function prepareExpenseChartData(expenses) {
 
 function prepareCustomerChartData(customers) {
   const monthlyData = {};
-  
+
   customers.forEach(customer => {
     const month = format(new Date(customer.acquisition_date || customer.created_date), 'MMM yyyy');
     monthlyData[month] = (monthlyData[month] || 0) + 1;
@@ -383,6 +378,11 @@ function prepareCustomerChartData(customers) {
 
   return Object.entries(monthlyData)
     .map(([period, customers]) => ({ period, customers }))
-    .sort((a, b) => new Date(a.period) - new Date(b.period))
+    .sort((a, b) => {
+      // Fix date sorting for "MMM yyyy" format - same as revenue chart
+      const dateA = new Date(a.period + ' 01');
+      const dateB = new Date(b.period + ' 01');
+      return dateA - dateB;
+    })
     .slice(-12);
 }

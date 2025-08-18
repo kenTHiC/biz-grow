@@ -49,11 +49,16 @@ const DataManager = ({ isOpen, onClose, onDataChange }) => {
 
     setIsProcessing(true);
     try {
+      console.log('Starting import with merge:', mergeData);
+      console.log('Import data:', importPreview.data);
+
       const result = await dataStore.importData(importPreview.data, {
         merge: mergeData,
         validateData: true,
         createBackup: true
       });
+
+      console.log('Import result:', result);
 
       setImportStatus({
         type: 'success',
@@ -61,14 +66,18 @@ const DataManager = ({ isOpen, onClose, onDataChange }) => {
       });
 
       setImportPreview(null);
+
+      // Force data refresh
+      console.log('Triggering data refresh...');
       onDataChange?.();
-      
-      // Auto-close after successful import
+
+      // Reload the page to ensure all components refresh
       setTimeout(() => {
-        onClose();
-      }, 2000);
-      
+        window.location.reload();
+      }, 1500);
+
     } catch (error) {
+      console.error('Import error:', error);
       setImportStatus({
         type: 'error',
         message: error.message

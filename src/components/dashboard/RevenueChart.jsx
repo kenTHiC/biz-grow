@@ -15,7 +15,7 @@ export default function RevenueChart({ data, title = "Revenue Trends" }) {
     </div>
   );
 
-  const hasData = data && data.length > 0 && data.some(item => item.amount > 0);
+  const hasData = data && data.length > 0 && data.some(item => (item.revenue || item.amount) > 0);
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}

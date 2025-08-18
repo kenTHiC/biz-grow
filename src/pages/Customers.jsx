@@ -16,8 +16,10 @@ export default function Customers() {
     phone: '',
     company: '',
     status: 'potential',
-    total_value: 0
+    total_value: 0,
+    acquisition_date: format(new Date(), 'yyyy-MM-dd')
   });
+  const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
     loadCustomers();
@@ -27,29 +29,122 @@ export default function Customers() {
     setIsLoading(true);
     try {
       const data = await Customer.list();
-      setCustomers(data);
+      // Filter out any null/undefined customers and ensure they have IDs
+      const validCustomers = (data || []).filter(customer =>
+        customer &&
+        customer.id !== null &&
+        customer.id !== undefined &&
+        customer.email
+      );
+      console.log('Loaded customers:', validCustomers);
+      setCustomers(validCustomers);
     } catch (error) {
       console.error('Error loading customers:', error);
+      setCustomers([]); // Set empty array on error
     }
     setIsLoading(false);
   };
 
+  const validateForm = () => {
+    const errors = {};
+
+    if (!formData.name.trim()) {
+      errors.name = 'Name is required';
+    }
+
+    if (!formData.email.trim()) {
+      errors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = 'Email is invalid';
+    }
+
+    if (!formData.company.trim()) {
+      errors.company = 'Company is required';
+    }
+
+    if (formData.total_value < 0) {
+      errors.total_value = 'Total value cannot be negative';
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if (editingCustomer) {
-        await Customer.update(editingCustomer.id, formData);
-      } else {
-        await Customer.create(formData);
+
+    console.log('Form submission started');
+    console.log('Editing customer:', editingCustomer);
+    console.log('Form data:', formData);
+
+    // Validate form
+    if (!validateForm()) {
+      console.log('Form validation failed');
+      return;
+    }
+
+    // Validate for duplicates (only when creating new customer or changing email)
+    if (!editingCustomer || (editingCustomer && editingCustomer.email.toLowerCase() !== formData.email.toLowerCase())) {
+      console.log('Checking for duplicates...');
+      console.log('Current email:', editingCustomer?.email);
+      console.log('New email:', formData.email);
+
+      const isDuplicate = customers.some(customer =>
+        customer.email.toLowerCase() === formData.email.toLowerCase() &&
+        customer.id !== (editingCustomer?.id || null)
+      );
+
+      console.log('Is duplicate:', isDuplicate);
+
+      if (isDuplicate) {
+        console.log('Duplicate email detected');
+        setFormErrors({ email: 'A customer with this email already exists!' });
+        return;
       }
+    } else {
+      console.log('Skipping duplicate check - same email for existing customer');
+    }
+
+    try {
+      // Ensure numeric values are properly converted
+      const customerData = {
+        ...formData,
+        total_value: parseFloat(formData.total_value) || 0,
+        name: formData.name.trim(),
+        email: formData.email.trim().toLowerCase(),
+        phone: formData.phone.trim(),
+        company: formData.company.trim()
+      };
+
+      if (editingCustomer) {
+        console.log('Updating customer:', editingCustomer.id, customerData);
+        const result = await Customer.update(editingCustomer.id, customerData);
+        console.log('Update result:', result);
+      } else {
+        console.log('Creating customer:', customerData);
+        const result = await Customer.create(customerData);
+        console.log('Create result:', result);
+      }
+
       await loadCustomers();
       resetForm();
+
+      // Show success message
+      const action = editingCustomer ? 'updated' : 'created';
+      console.log(`Customer ${action} successfully!`);
+
     } catch (error) {
       console.error('Error saving customer:', error);
+      if (error.message.includes('already exists')) {
+        setFormErrors({ email: error.message });
+      } else {
+        alert(`Error saving customer: ${error.message}`);
+      }
     }
   };
 
   const handleEdit = (customer) => {
+    console.log('Editing customer:', customer);
     setEditingCustomer(customer);
     setFormData({
       name: customer.name,
@@ -57,8 +152,10 @@ export default function Customers() {
       phone: customer.phone || '',
       company: customer.company,
       status: customer.status,
-      total_value: customer.total_value || 0
+      total_value: customer.total_value || 0,
+      acquisition_date: customer.acquisition_date || format(new Date(), 'yyyy-MM-dd')
     });
+    setFormErrors({}); // Clear any existing errors
     setShowForm(true);
   };
 
@@ -80,8 +177,10 @@ export default function Customers() {
       phone: '',
       company: '',
       status: 'potential',
-      total_value: 0
+      total_value: 0,
+      acquisition_date: format(new Date(), 'yyyy-MM-dd')
     });
+    setFormErrors({});
     setEditingCustomer(null);
     setShowForm(false);
   };
@@ -159,8 +258,13 @@ export default function Customers() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
+                      formErrors.name
+                        ? 'border-red-300 focus:ring-red-500'
+                        : 'border-slate-300 focus:ring-blue-500'
+                    }`}
                   />
+                  {formErrors.name && <p key="name-error" className="text-red-500 text-xs mt-1">{formErrors.name}</p>}
                 </div>
 
                 <div>
@@ -170,8 +274,18 @@ export default function Customers() {
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
+                      formErrors.email
+                        ? 'border-red-300 focus:ring-red-500'
+                        : 'border-slate-300 focus:ring-blue-500'
+                    }`}
+                    placeholder="customer@example.com"
                   />
+                  {formErrors.email ? (
+                    <p key="email-error" className="text-red-500 text-xs mt-1">{formErrors.email}</p>
+                  ) : (
+                    <p key="email-help" className="text-xs text-gray-500 mt-1">Email must be unique for each customer</p>
+                  )}
                 </div>
 
                 <div>
@@ -185,13 +299,19 @@ export default function Customers() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Company</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Company *</label>
                   <input
                     type="text"
+                    required
                     value={formData.company}
                     onChange={(e) => setFormData({...formData, company: e.target.value})}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
+                      formErrors.company
+                        ? 'border-red-300 focus:ring-red-500'
+                        : 'border-slate-300 focus:ring-blue-500'
+                    }`}
                   />
+                  {formErrors.company && <p key="company-error" className="text-red-500 text-xs mt-1">{formErrors.company}</p>}
                 </div>
 
                 <div>
@@ -215,6 +335,21 @@ export default function Customers() {
                     step="0.01"
                     value={formData.total_value}
                     onChange={(e) => setFormData({...formData, total_value: parseFloat(e.target.value) || 0})}
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
+                      formErrors.total_value
+                        ? 'border-red-300 focus:ring-red-500'
+                        : 'border-slate-300 focus:ring-blue-500'
+                    }`}
+                  />
+                  {formErrors.total_value && <p key="total-value-error" className="text-red-500 text-xs mt-1">{formErrors.total_value}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Acquisition Date</label>
+                  <input
+                    type="date"
+                    value={formData.acquisition_date}
+                    onChange={(e) => setFormData({...formData, acquisition_date: e.target.value})}
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -241,9 +376,9 @@ export default function Customers() {
 
         {/* Customer Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {customers.map((customer, index) => (
+          {customers.filter(customer => customer && customer.id).map((customer, index) => (
             <motion.div
-              key={customer.id}
+              key={`customer-${customer.id}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -285,14 +420,14 @@ export default function Customers() {
                   </div>
                   
                   {customer.phone && (
-                    <div className="flex items-center gap-2 text-sm text-slate-600">
+                    <div key={`phone-${customer.id}`} className="flex items-center gap-2 text-sm text-slate-600">
                       <Phone className="w-4 h-4" />
                       <span>{customer.phone}</span>
                     </div>
                   )}
                   
                   {customer.company && (
-                    <div className="flex items-center gap-2 text-sm text-slate-600">
+                    <div key={`company-${customer.id}`} className="flex items-center gap-2 text-sm text-slate-600">
                       <Building className="w-4 h-4" />
                       <span>{customer.company}</span>
                     </div>

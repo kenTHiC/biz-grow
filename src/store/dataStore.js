@@ -101,7 +101,16 @@ class DataStore {
 
   // Customer methods
   getCustomers(sortBy = '-acquisition_date') {
-    let sorted = [...this.customers];
+    // Filter out any invalid customers
+    const validCustomers = this.customers.filter(customer =>
+      customer &&
+      customer.id !== null &&
+      customer.id !== undefined &&
+      customer.email &&
+      customer.name
+    );
+
+    let sorted = [...validCustomers];
     if (sortBy === '-acquisition_date') {
       sorted.sort((a, b) => new Date(b.acquisition_date) - new Date(a.acquisition_date));
     }
@@ -113,12 +122,24 @@ class DataStore {
   }
 
   addCustomer(customerData) {
+    // Check for duplicate email
+    const existingCustomer = this.customers.find(c =>
+      c.email.toLowerCase() === customerData.email.toLowerCase()
+    );
+
+    if (existingCustomer) {
+      throw new Error(`Customer with email ${customerData.email} already exists`);
+    }
+
     const newCustomer = {
       ...customerData,
       id: generateId(this.customers),
       acquisition_date: customerData.acquisition_date || format(new Date(), 'yyyy-MM-dd'),
-      total_value: customerData.total_value || 0
+      total_value: parseFloat(customerData.total_value) || 0,
+      email: customerData.email.toLowerCase() // Normalize email
     };
+
+    console.log('DataStore adding customer:', newCustomer);
     this.customers.push(newCustomer);
     saveToStorage(STORAGE_KEYS.CUSTOMERS, this.customers);
     return newCustomer;
@@ -127,10 +148,37 @@ class DataStore {
   updateCustomer(id, customerData) {
     const index = this.customers.findIndex(c => c.id === parseInt(id));
     if (index !== -1) {
-      this.customers[index] = { ...this.customers[index], ...customerData };
+      const currentCustomer = this.customers[index];
+
+      // Check for duplicate email only if email is being changed
+      if (customerData.email && customerData.email.toLowerCase() !== currentCustomer.email.toLowerCase()) {
+        const existingCustomer = this.customers.find(c =>
+          c.email.toLowerCase() === customerData.email.toLowerCase() &&
+          c.id !== parseInt(id)
+        );
+
+        if (existingCustomer) {
+          throw new Error(`Customer with email ${customerData.email} already exists`);
+        }
+      }
+
+      // Ensure all fields are properly updated
+      const updatedCustomer = {
+        ...currentCustomer,
+        ...customerData,
+        id: parseInt(id), // Ensure ID remains as integer
+        total_value: parseFloat(customerData.total_value) || 0,
+        acquisition_date: customerData.acquisition_date || currentCustomer.acquisition_date,
+        email: customerData.email ? customerData.email.toLowerCase() : currentCustomer.email
+      };
+
+      console.log('DataStore updating customer:', id, updatedCustomer);
+      this.customers[index] = updatedCustomer;
       saveToStorage(STORAGE_KEYS.CUSTOMERS, this.customers);
+      console.log('Customer updated in dataStore:', this.customers[index]);
       return this.customers[index];
     }
+    console.error('Customer not found for update:', id);
     return null;
   }
 
@@ -297,23 +345,59 @@ class DataStore {
 
       // Import customers
       if (data.customers && Array.isArray(data.customers)) {
-        const importedCustomers = data.customers.map(customer => ({
-          ...customer,
-          id: merge ? generateId([...this.customers, ...data.customers]) : customer.id || generateId(this.customers)
-        }));
+        console.log('Processing customer import:', data.customers.length, 'customers');
+        console.log('Sample customer data:', data.customers[0]);
+
+        // Generate IDs properly for all customers
+        let nextId = this.customers.length > 0 ? Math.max(...this.customers.map(c => c.id)) + 1 : 1;
+
+        const importedCustomers = data.customers.map((customer, index) => {
+          const processedCustomer = {
+            ...customer,
+            id: customer.id || nextId++, // Use sequential ID generation
+            acquisition_date: customer.acquisition_date || format(new Date(), 'yyyy-MM-dd'),
+            total_value: parseFloat(customer.total_value) || 0,
+            email: customer.email ? customer.email.toLowerCase() : '',
+            phone: customer.phone || '',
+            company: customer.company || '',
+            status: customer.status || 'potential'
+          };
+
+          console.log(`Processing customer ${index + 1}:`, processedCustomer);
+          return processedCustomer;
+        });
 
         if (merge) {
-          this.customers = [...this.customers, ...importedCustomers];
+          // Filter out duplicates when merging (only check against existing customers, not within import)
+          const existingEmails = new Set(this.customers.map(c => c.email.toLowerCase()));
+          const uniqueCustomers = importedCustomers.filter((c, index) => {
+            const email = c.email.toLowerCase();
+            const isUnique = !existingEmails.has(email);
+            if (!isUnique) {
+              console.log(`Filtering duplicate customer ${index + 1}:`, c.email, '(already exists in database)');
+            } else {
+              console.log(`Adding unique customer ${index + 1}:`, c.email);
+            }
+            return isUnique;
+          });
+          console.log(`Merging ${uniqueCustomers.length} unique customers out of ${importedCustomers.length} imported`);
+          this.customers = [...this.customers, ...uniqueCustomers];
         } else {
+          console.log('Replacing all customers with imported data');
+          console.log('Imported customers:', importedCustomers.map(c => ({ id: c.id, email: c.email, name: c.name })));
           this.customers = importedCustomers;
         }
+
+        console.log('Final customer count:', this.customers.length);
       }
 
       // Import revenues
       if (data.revenues && Array.isArray(data.revenues)) {
         const importedRevenues = data.revenues.map(revenue => ({
           ...revenue,
-          id: merge ? generateId([...this.revenues, ...data.revenues]) : revenue.id || generateId(this.revenues)
+          id: merge ? generateId([...this.revenues, ...data.revenues]) : revenue.id || generateId(this.revenues),
+          date: revenue.date || format(new Date(), 'yyyy-MM-dd'),
+          amount: parseFloat(revenue.amount) || 0
         }));
 
         if (merge) {
@@ -321,13 +405,17 @@ class DataStore {
         } else {
           this.revenues = importedRevenues;
         }
+
+        console.log('Imported revenues:', this.revenues.length);
       }
 
       // Import expenses
       if (data.expenses && Array.isArray(data.expenses)) {
         const importedExpenses = data.expenses.map(expense => ({
           ...expense,
-          id: merge ? generateId([...this.expenses, ...data.expenses]) : expense.id || generateId(this.expenses)
+          id: merge ? generateId([...this.expenses, ...data.expenses]) : expense.id || generateId(this.expenses),
+          date: expense.date || format(new Date(), 'yyyy-MM-dd'),
+          amount: parseFloat(expense.amount) || 0
         }));
 
         if (merge) {
@@ -335,12 +423,29 @@ class DataStore {
         } else {
           this.expenses = importedExpenses;
         }
+
+        console.log('Imported expenses:', this.expenses.length);
       }
 
-      // Save all data
+      // Save all data to localStorage
+      console.log('Saving imported data to localStorage...');
+      console.log('Customers to save:', this.customers.length);
+      console.log('Revenues to save:', this.revenues.length);
+      console.log('Expenses to save:', this.expenses.length);
+
       saveToStorage(STORAGE_KEYS.CUSTOMERS, this.customers);
       saveToStorage(STORAGE_KEYS.REVENUES, this.revenues);
       saveToStorage(STORAGE_KEYS.EXPENSES, this.expenses);
+
+      // Verify data was saved
+      const savedCustomers = loadFromStorage(STORAGE_KEYS.CUSTOMERS, []);
+      const savedRevenues = loadFromStorage(STORAGE_KEYS.REVENUES, []);
+      const savedExpenses = loadFromStorage(STORAGE_KEYS.EXPENSES, []);
+
+      console.log('Verified saved data:');
+      console.log('Customers saved:', savedCustomers.length);
+      console.log('Revenues saved:', savedRevenues.length);
+      console.log('Expenses saved:', savedExpenses.length);
 
       return {
         success: true,

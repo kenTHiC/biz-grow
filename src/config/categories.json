@@ -1,0 +1,86 @@
+{
+  "revenue": {
+    "product_sales": {
+      "label": "Product Sales",
+      "description": "Revenue from product sales",
+      "color": "#3b82f6"
+    },
+    "service_revenue": {
+      "label": "Service Revenue", 
+      "description": "Revenue from services provided",
+      "color": "#10b981"
+    },
+    "subscription": {
+      "label": "Subscription",
+      "description": "Recurring subscription revenue",
+      "color": "#8b5cf6"
+    },
+    "consulting": {
+      "label": "Consulting",
+      "description": "Consulting and advisory services",
+      "color": "#6366f1"
+    },
+    "licensing": {
+      "label": "Licensing",
+      "description": "Software or IP licensing fees",
+      "color": "#f59e0b"
+    },
+    "other": {
+      "label": "Other",
+      "description": "Other revenue sources",
+      "color": "#6b7280"
+    }
+  },
+  "expense": {
+    "office_supplies": {
+      "label": "Office Supplies",
+      "description": "Office materials and supplies",
+      "color": "#6b7280"
+    },
+    "software": {
+      "label": "Software",
+      "description": "Software licenses and subscriptions",
+      "color": "#3b82f6"
+    },
+    "marketing": {
+      "label": "Marketing",
+      "description": "Marketing and advertising expenses",
+      "color": "#ec4899"
+    },
+    "rent": {
+      "label": "Rent",
+      "description": "Office rent and facilities",
+      "color": "#ef4444"
+    },
+    "utilities": {
+      "label": "Utilities",
+      "description": "Electricity, water, internet",
+      "color": "#f97316"
+    },
+    "travel": {
+      "label": "Travel",
+      "description": "Business travel expenses",
+      "color": "#84cc16"
+    },
+    "salaries": {
+      "label": "Salaries",
+      "description": "Employee salaries and wages",
+      "color": "#06b6d4"
+    },
+    "equipment": {
+      "label": "Equipment",
+      "description": "Office equipment and hardware",
+      "color": "#8b5cf6"
+    },
+    "professional_services": {
+      "label": "Professional Services",
+      "description": "Legal, accounting, consulting",
+      "color": "#f59e0b"
+    },
+    "other": {
+      "label": "Other",
+      "description": "Other business expenses",
+      "color": "#6b7280"
+    }
+  }
+}

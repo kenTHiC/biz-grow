@@ -1,6 +1,7 @@
 import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { BarChart3 } from 'lucide-react';
+import CategoryManager from '../../utils/categories';
 
 const CategoryPieChart = ({ data, title, type = "expense" }) => {
   // Process data to group by category
@@ -15,9 +16,10 @@ const CategoryPieChart = ({ data, title, type = "expense" }) => {
 
     return Object.entries(categoryTotals)
       .map(([category, amount]) => ({
-        name: category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+        name: CategoryManager.getCategoryLabel(type, category),
         value: amount,
-        percentage: 0 // Will be calculated after sorting
+        percentage: 0, // Will be calculated after sorting
+        category: category // Keep original category key for color mapping
       }))
       .sort((a, b) => b.value - a.value)
       .map((item, index, array) => {
@@ -32,20 +34,17 @@ const CategoryPieChart = ({ data, title, type = "expense" }) => {
   const chartData = processData();
   const total = chartData.reduce((sum, item) => sum + item.value, 0);
 
-  // Color schemes
-  const expenseColors = [
-    '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16',
-    '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9',
-    '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#d946ef'
-  ];
-
-  const revenueColors = [
-    '#22c55e', '#16a34a', '#15803d', '#166534', '#14532d',
-    '#10b981', '#059669', '#047857', '#065f46', '#064e3b',
-    '#06b6d4', '#0891b2', '#0e7490', '#155e75', '#164e63'
-  ];
-
-  const colors = type === 'expense' ? expenseColors : revenueColors;
+  // Get colors from category configuration
+  const getItemColor = (item, index) => {
+    if (item.category) {
+      return CategoryManager.getCategoryColor(type, item.category);
+    }
+    // Fallback colors if category not found
+    const fallbackColors = type === 'expense'
+      ? ['#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#d946ef']
+      : ['#22c55e', '#16a34a', '#15803d', '#166534', '#14532d', '#10b981', '#059669', '#047857', '#065f46', '#064e3b', '#06b6d4', '#0891b2', '#0e7490', '#155e75', '#164e63'];
+    return fallbackColors[index % fallbackColors.length];
+  };
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('en-US', {
@@ -131,9 +130,9 @@ const CategoryPieChart = ({ data, title, type = "expense" }) => {
               dataKey="value"
             >
               {chartData.map((entry, index) => (
-                <Cell 
-                  key={`cell-${index}`} 
-                  fill={colors[index % colors.length]}
+                <Cell
+                  key={`cell-${index}`}
+                  fill={getItemColor(entry, index)}
                 />
               ))}
             </Pie>
@@ -150,9 +149,9 @@ const CategoryPieChart = ({ data, title, type = "expense" }) => {
           {chartData.slice(0, 5).map((item, index) => (
             <div key={index} className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-2">
-                <div 
-                  className="w-3 h-3 rounded-full" 
-                  style={{ backgroundColor: colors[index % colors.length] }}
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: getItemColor(item, index) }}
                 />
                 <span className="text-gray-700">{item.name}</span>
               </div>

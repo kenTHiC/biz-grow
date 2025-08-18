@@ -10,7 +10,12 @@ import Reports from './pages/Reports';
 function App() {
   return (
     <ToastProvider>
-      <Router>
+      <Router
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true
+        }}
+      >
         <Layout>
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />

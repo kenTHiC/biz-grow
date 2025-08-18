@@ -42,12 +42,14 @@ export class DataImporter {
     try {
       const text = await file.text();
       const lines = text.split('\n').filter(line => line.trim());
-      
+
       if (lines.length < 2) {
         throw new Error('CSV file must have at least a header and one data row');
       }
 
       const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+      console.log('CSV headers detected:', headers);
+
       const rows = lines.slice(1).map(line => {
         const values = this.parseCSVLine(line);
         const obj = {};
@@ -57,14 +59,22 @@ export class DataImporter {
         return obj;
       });
 
+      console.log('CSV rows parsed:', rows.length);
+      console.log('Sample row:', rows[0]);
+
       // Detect data type based on headers
       const dataType = this.detectDataType(headers);
+      console.log('Detected data type:', dataType);
+
       const normalizedData = this.normalizeData(rows, dataType);
+      console.log('Normalized data:', normalizedData.length, 'items');
+      console.log('Sample normalized item:', normalizedData[0]);
 
       return {
         [dataType]: normalizedData
       };
     } catch (error) {
+      console.error('CSV import error:', error);
       throw new Error(`CSV import failed: ${error.message}`);
     }
   }
@@ -123,26 +133,42 @@ export class DataImporter {
 
   static detectDataType(headers) {
     const headerStr = headers.join(' ').toLowerCase();
-    
-    // Customer indicators
-    if (headerStr.includes('customer') || headerStr.includes('client') || 
-        headerStr.includes('name') && headerStr.includes('email')) {
-      return 'customers';
-    }
-    
-    // Revenue indicators
-    if (headerStr.includes('revenue') || headerStr.includes('income') || 
-        headerStr.includes('sales') || (headerStr.includes('amount') && headerStr.includes('source'))) {
+    console.log('Detecting data type from headers:', headers);
+    console.log('Header string:', headerStr);
+
+    // Revenue indicators (check FIRST - most specific)
+    if (headerStr.includes('revenue') || headerStr.includes('income') ||
+        headerStr.includes('sales') || headerStr.includes('source') ||
+        (headerStr.includes('amount') && headerStr.includes('customer_name')) ||
+        (headerStr.includes('amount') && headerStr.includes('description') && !headerStr.includes('vendor'))) {
+      console.log('Detected as revenues');
       return 'revenues';
     }
-    
-    // Expense indicators
-    if (headerStr.includes('expense') || headerStr.includes('cost') || 
-        headerStr.includes('vendor') || (headerStr.includes('amount') && headerStr.includes('category'))) {
+
+    // Expense indicators (check SECOND)
+    if (headerStr.includes('expense') || headerStr.includes('cost') ||
+        headerStr.includes('vendor') || headerStr.includes('receipt') ||
+        (headerStr.includes('amount') && headerStr.includes('category') && headerStr.includes('vendor'))) {
+      console.log('Detected as expenses');
       return 'expenses';
     }
-    
-    // Default to customers if unclear
+
+    // Customer indicators (check LAST - most general)
+    if (headerStr.includes('customer') || headerStr.includes('client') ||
+        (headerStr.includes('name') && headerStr.includes('email')) ||
+        headerStr.includes('company') || headerStr.includes('phone') ||
+        headerStr.includes('acquisition') || headerStr.includes('status')) {
+      console.log('Detected as customers');
+      return 'customers';
+    }
+
+    // Default fallback based on most common field
+    if (headerStr.includes('amount')) {
+      console.log('Detected as revenues (amount fallback)');
+      return 'revenues';
+    }
+
+    console.log('Detected as customers (final fallback)');
     return 'customers';
   }
 
@@ -161,23 +187,34 @@ export class DataImporter {
   }
 
   static normalizeData(data, dataType) {
-    return data.map((item, index) => {
+    console.log(`Normalizing ${data.length} ${dataType} items`);
+
+    const normalized = data.map((item, index) => {
       try {
+        let result;
         switch (dataType) {
           case 'customers':
-            return this.normalizeCustomer(item);
+            result = this.normalizeCustomer(item);
+            break;
           case 'revenues':
-            return this.normalizeRevenue(item);
+            result = this.normalizeRevenue(item);
+            break;
           case 'expenses':
-            return this.normalizeExpense(item);
+            result = this.normalizeExpense(item);
+            break;
           default:
-            return item;
+            result = item;
         }
+        console.log(`Normalized ${dataType} ${index + 1}:`, result);
+        return result;
       } catch (error) {
-        console.warn(`Error normalizing ${dataType} at index ${index}:`, error);
+        console.error(`Error normalizing ${dataType} at index ${index}:`, error, 'Original item:', item);
         return null;
       }
     }).filter(item => item !== null);
+
+    console.log(`Successfully normalized ${normalized.length} out of ${data.length} ${dataType} items`);
+    return normalized;
   }
 
   static normalizeCustomer(item) {
@@ -204,12 +241,14 @@ export class DataImporter {
       }
     });
 
-    // Ensure required fields
+    // Ensure required fields (with fallbacks)
     if (!normalized.name) {
-      throw new Error('Customer name is required');
+      console.warn('Customer missing name, using fallback');
+      normalized.name = normalized.company || normalized.email || 'Unknown Customer';
     }
     if (!normalized.email) {
-      throw new Error('Customer email is required');
+      console.warn('Customer missing email, using fallback');
+      normalized.email = `customer${Date.now()}@example.com`;
     }
 
     // Set defaults
@@ -241,12 +280,14 @@ export class DataImporter {
       }
     });
 
-    // Ensure required fields
+    // Ensure required fields (with fallbacks)
     if (!normalized.amount) {
-      throw new Error('Revenue amount is required');
+      console.warn('Revenue missing amount, using fallback');
+      normalized.amount = 0;
     }
     if (!normalized.date) {
-      throw new Error('Revenue date is required');
+      console.warn('Revenue missing date, using current date');
+      normalized.date = new Date().toISOString().split('T')[0];
     }
 
     // Set defaults and parse values
