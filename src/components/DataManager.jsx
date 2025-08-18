@@ -1,15 +1,19 @@
 import React, { useState, useRef } from 'react';
 import { Upload, Download, FileText, Database, AlertTriangle, CheckCircle, X, Settings } from 'lucide-react';
+import { useToast } from './ui/toast';
+import ConfirmationModal from './ui/confirmation-modal';
 import DataImporter from '../utils/dataImporter';
 import DataExporter from '../utils/dataExporter';
 import dataStore from '../store/dataStore';
 
 const DataManager = ({ isOpen, onClose, onDataChange }) => {
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('import');
   const [importStatus, setImportStatus] = useState(null);
   const [exportStatus, setExportStatus] = useState(null);
   const [importPreview, setImportPreview] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, type: '' });
   const fileInputRef = useRef(null);
 
   const handleFileSelect = async (event) => {
@@ -125,14 +129,39 @@ const DataManager = ({ isOpen, onClose, onDataChange }) => {
   };
 
   const handleClearAllData = () => {
-    if (window.confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
-      dataStore.clearAllUserData();
-      onDataChange?.();
-      setImportStatus({
-        type: 'success',
-        message: 'All data cleared successfully.'
-      });
+    setConfirmModal({ isOpen: true, type: 'clear-all' });
+  };
+
+  const confirmClearAllData = () => {
+    dataStore.clearAllUserData();
+    onDataChange?.();
+    setImportStatus({
+      type: 'success',
+      message: 'All data cleared successfully.'
+    });
+    toast.success('All data cleared successfully!');
+  };
+
+  const closeConfirmModal = () => {
+    setConfirmModal({ isOpen: false, type: '' });
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmModal.type === 'clear-all') {
+      confirmClearAllData();
     }
+  };
+
+  const getConfirmModalProps = () => {
+    if (confirmModal.type === 'clear-all') {
+      return {
+        title: 'Clear All Data',
+        message: 'Are you sure you want to clear all data? This action cannot be undone and will permanently delete all customers, revenues, and expenses.',
+        confirmText: 'Clear All Data',
+        variant: 'danger'
+      };
+    }
+    return {};
   };
 
   if (!isOpen) return null;
@@ -399,6 +428,14 @@ const DataManager = ({ isOpen, onClose, onDataChange }) => {
           )}
         </div>
       </div>
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={closeConfirmModal}
+        onConfirm={handleConfirmAction}
+        {...getConfirmModalProps()}
+      />
     </div>
   );
 };

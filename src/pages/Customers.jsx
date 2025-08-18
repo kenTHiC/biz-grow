@@ -4,8 +4,11 @@ import { Users, Plus, Edit, Trash2, Mail, Phone, Building, Calendar, DollarSign 
 import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import { useToast } from "@/components/ui/toast";
+import ConfirmationModal from "@/components/ui/confirmation-modal";
 
 export default function Customers() {
+  const { toast } = useToast();
   const [customers, setCustomers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -20,6 +23,7 @@ export default function Customers() {
     acquisition_date: format(new Date(), 'yyyy-MM-dd')
   });
   const [formErrors, setFormErrors] = useState({});
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, customerId: null });
 
   useEffect(() => {
     loadCustomers();
@@ -138,7 +142,7 @@ export default function Customers() {
       if (error.message.includes('already exists')) {
         setFormErrors({ email: error.message });
       } else {
-        alert(`Error saving customer: ${error.message}`);
+        toast.error(`Error saving customer: ${error.message}`);
       }
     }
   };
@@ -159,15 +163,23 @@ export default function Customers() {
     setShowForm(true);
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this customer?')) {
-      try {
-        await Customer.delete(id);
-        await loadCustomers();
-      } catch (error) {
-        console.error('Error deleting customer:', error);
-      }
+  const handleDelete = (id) => {
+    setConfirmModal({ isOpen: true, customerId: id });
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await Customer.delete(confirmModal.customerId);
+      await loadCustomers();
+      toast.success('Customer deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting customer:', error);
+      toast.error(`Error deleting customer: ${error.message}`);
     }
+  };
+
+  const closeConfirmModal = () => {
+    setConfirmModal({ isOpen: false, customerId: null });
   };
 
   const resetForm = () => {
@@ -466,6 +478,17 @@ export default function Customers() {
             </button>
           </motion.div>
         )}
+
+        {/* Confirmation Modal */}
+        <ConfirmationModal
+          isOpen={confirmModal.isOpen}
+          onClose={closeConfirmModal}
+          onConfirm={confirmDelete}
+          title="Delete Customer"
+          message="Are you sure you want to delete this customer? This action cannot be undone."
+          confirmText="Delete"
+          variant="danger"
+        />
       </div>
     </div>
   );

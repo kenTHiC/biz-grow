@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2024-08-18
+
+### 🔧 **CRITICAL BUG FIXES**
+- **FIXED**: Multi-selection checkbox functionality - resolved duplicate ID issue causing all items to be selected when clicking one checkbox
+- **FIXED**: Selection state management - implemented Set-based selection logic to prevent duplicate entries under React StrictMode
+- **FIXED**: ID normalization - ensured consistent string-based ID handling throughout selection system
+- **FIXED**: Duplicate ID prevention - added comprehensive ID uniqueness validation on data load and import
+
+### 🎨 **UI/UX IMPROVEMENTS**
+- **REPLACED**: All browser alert() and confirm() dialogs with custom modal components
+- **ADDED**: Professional confirmation modals with proper styling and animations
+- **ENHANCED**: User experience with non-blocking modal dialogs instead of intrusive browser alerts
+- **IMPROVED**: Visual consistency across all confirmation interactions
+
+### 🛠️ **TECHNICAL IMPROVEMENTS**
+- **ENHANCED**: DataStore migration system to fix duplicate IDs automatically on startup
+- **IMPROVED**: Import logic to assign unique sequential IDs preventing collisions
+- **OPTIMIZED**: Selection logic using Set data structure for guaranteed uniqueness
+- **STRENGTHENED**: Type safety with consistent string-based ID comparisons
+
+### 🧹 **CODE QUALITY**
+- **REFACTORED**: Selection state management for better reliability
+- **IMPROVED**: Error handling and user feedback throughout the application
+- **ENHANCED**: Code organization with reusable confirmation modal component
+- **OPTIMIZED**: React component performance and state management
+
+---
+
 ## [1.2.0] - 2024-08-18
 
 ### 🔧 **CRITICAL BUG FIXES**

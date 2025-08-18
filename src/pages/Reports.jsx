@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { useToast } from "@/components/ui/toast";
+import ConfirmationModal from "@/components/ui/confirmation-modal";
 import CategoryManager from '../utils/categories';
 
 export default function Reports() {
@@ -19,6 +20,7 @@ export default function Reports() {
   const [formData, setFormData] = useState({});
   const [selectedItems, setSelectedItems] = useState([]);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, type: '', data: null });
 
   useEffect(() => {
     loadData();
@@ -128,37 +130,41 @@ export default function Reports() {
     }
   };
 
-  const handleDelete = async (id, type) => {
+  const handleDelete = (id, type) => {
     console.log('🗑️ DELETE CLICKED:', { id, type });
+    setConfirmModal({
+      isOpen: true,
+      type: 'single-delete',
+      data: { id, type }
+    });
+  };
+
+  const confirmSingleDelete = async () => {
+    const { id, type } = confirmModal.data;
     console.log(`Attempting to delete ${type} with ID:`, id);
 
-    if (window.confirm(`Are you sure you want to delete this ${type}?`)) {
-      console.log('User confirmed deletion');
-      try {
-        let result;
-        if (type === 'revenue') {
-          console.log('Calling Revenue.delete...');
-          result = await Revenue.delete(id);
-          console.log('Revenue delete result:', result);
-        } else {
-          console.log('Calling Expense.delete...');
-          result = await Expense.delete(id);
-          console.log('Expense delete result:', result);
-        }
-
-        console.log('Reloading data after delete...');
-        await loadData();
-        console.log('Data reloaded successfully');
-
-        // Show success toast
-        toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} deleted successfully!`);
-
-      } catch (error) {
-        console.error('Error deleting item:', error);
-        toast.error(`Error deleting ${type}: ${error.message}`);
+    try {
+      let result;
+      if (type === 'revenue') {
+        console.log('Calling Revenue.delete...');
+        result = await Revenue.delete(id);
+        console.log('Revenue delete result:', result);
+      } else {
+        console.log('Calling Expense.delete...');
+        result = await Expense.delete(id);
+        console.log('Expense delete result:', result);
       }
-    } else {
-      console.log('User cancelled deletion');
+
+      console.log('Reloading data after delete...');
+      await loadData();
+      console.log('Data reloaded successfully');
+
+      // Show success toast
+      toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} deleted successfully!`);
+
+    } catch (error) {
+      console.error('Error deleting item:', error);
+      toast.error(`Error deleting ${type}: ${error.message}`);
     }
   };
 
@@ -166,6 +172,39 @@ export default function Reports() {
     setFormData({});
     setEditingItem(null);
     setShowForm(false);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmModal.type === 'single-delete') {
+      confirmSingleDelete();
+    } else if (confirmModal.type === 'bulk-delete') {
+      confirmBulkDelete();
+    }
+  };
+
+  const closeConfirmModal = () => {
+    setConfirmModal({ isOpen: false, type: '', data: null });
+  };
+
+  const getConfirmModalProps = () => {
+    if (confirmModal.type === 'single-delete') {
+      const { type } = confirmModal.data;
+      return {
+        title: `Delete ${type.charAt(0).toUpperCase() + type.slice(1)}`,
+        message: `Are you sure you want to delete this ${type}? This action cannot be undone.`,
+        confirmText: 'Delete',
+        variant: 'danger'
+      };
+    } else if (confirmModal.type === 'bulk-delete') {
+      const { selectedItems: itemsToDelete, itemType } = confirmModal.data;
+      return {
+        title: `Delete ${itemsToDelete.length} ${itemType}${itemsToDelete.length > 1 ? 's' : ''}`,
+        message: `Are you sure you want to delete ${itemsToDelete.length} ${itemType}${itemsToDelete.length > 1 ? 's' : ''}? This action cannot be undone.`,
+        confirmText: 'Delete All',
+        variant: 'danger'
+      };
+    }
+    return {};
   };
 
   // Tab change handler
@@ -232,7 +271,7 @@ export default function Reports() {
     setSelectedItems(newSelection);
   };
 
-  const handleBulkDelete = async () => {
+  const handleBulkDelete = () => {
     console.log('🗑️ BULK DELETE CLICKED');
     console.log('Selected items:', selectedItems);
     console.log('Active tab:', activeTab);
@@ -244,46 +283,48 @@ export default function Reports() {
     }
 
     const itemType = activeTab === 'revenues' ? 'revenue' : 'expense';
-    const confirmMessage = `Are you sure you want to delete ${selectedItems.length} ${itemType}${selectedItems.length > 1 ? 's' : ''}?`;
+    setConfirmModal({
+      isOpen: true,
+      type: 'bulk-delete',
+      data: { selectedItems: [...selectedItems], itemType }
+    });
+  };
 
-    console.log('Showing confirmation dialog:', confirmMessage);
+  const confirmBulkDelete = async () => {
+    const { selectedItems: itemsToDelete, itemType } = confirmModal.data;
+    console.log('User confirmed bulk deletion');
 
-    if (window.confirm(confirmMessage)) {
-      console.log('User confirmed bulk deletion');
-      try {
-        console.log(`Bulk deleting ${selectedItems.length} ${itemType}s:`, selectedItems);
+    try {
+      console.log(`Bulk deleting ${itemsToDelete.length} ${itemType}s:`, itemsToDelete);
 
-        // Delete all selected items
-        const deletePromises = selectedItems.map(id => {
-          console.log(`Creating delete promise for ID: ${id}`);
-          if (activeTab === 'revenues') {
-            return Revenue.delete(id);
-          } else {
-            return Expense.delete(id);
-          }
-        });
+      // Delete all selected items
+      const deletePromises = itemsToDelete.map(id => {
+        console.log(`Creating delete promise for ID: ${id}`);
+        if (activeTab === 'revenues') {
+          return Revenue.delete(id);
+        } else {
+          return Expense.delete(id);
+        }
+      });
 
-        console.log('Executing bulk delete promises...');
-        const deleteResults = await Promise.all(deletePromises);
-        console.log('Bulk delete results:', deleteResults);
+      console.log('Executing bulk delete promises...');
+      const deleteResults = await Promise.all(deletePromises);
+      console.log('Bulk delete results:', deleteResults);
 
-        console.log('Bulk delete completed, reloading data...');
-        await loadData();
+      console.log('Bulk delete completed, reloading data...');
+      await loadData();
 
-        // Reset selection
-        console.log('Resetting selection state...');
-        const deletedCount = selectedItems.length;
-        setSelectedItems([]);
-        setIsSelectionMode(false);
+      // Reset selection
+      console.log('Resetting selection state...');
+      const deletedCount = itemsToDelete.length;
+      setSelectedItems([]);
+      setIsSelectionMode(false);
 
-        toast.success(`Successfully deleted ${deletedCount} ${itemType}${deletedCount > 1 ? 's' : ''}!`);
+      toast.success(`Successfully deleted ${deletedCount} ${itemType}${deletedCount > 1 ? 's' : ''}!`);
 
-      } catch (error) {
-        console.error('Error in bulk delete:', error);
-        toast.error(`Error deleting items: ${error.message}`);
-      }
-    } else {
-      console.log('User cancelled bulk deletion');
+    } catch (error) {
+      console.error('Error in bulk delete:', error);
+      toast.error(`Error deleting items: ${error.message}`);
     }
   };
 
@@ -667,6 +708,14 @@ export default function Reports() {
             </CardContent>
           </Card>
         </motion.div>
+
+        {/* Confirmation Modal */}
+        <ConfirmationModal
+          isOpen={confirmModal.isOpen}
+          onClose={closeConfirmModal}
+          onConfirm={handleConfirmAction}
+          {...getConfirmModalProps()}
+        />
       </div>
     </div>
   );
