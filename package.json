@@ -1,6 +1,7 @@
 {
   "name": "biz-grow-dashboard",
-  "version": "1.2.1",
+  "version": "1.3.3",
+  "state": "beta",
   "description": "A modern, responsive business analytics dashboard built with React, featuring real-time data visualization, customer management, and financial tracking.",
   "type": "module",
   "keywords": [

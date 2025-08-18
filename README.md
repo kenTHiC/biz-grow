@@ -22,6 +22,7 @@
 ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FkenTHiC%2Fbiz-grow%2Frefs%2Fheads%2Fmain%2Fpackage.json&query=%24.version&prefix=v&logo=refinedgithub&logoColor=%23ffffff&label=release&labelColor=%23545A61&color=%23BEF9C6)
 ![GitHub top language](https://img.shields.io/github/languages/top/kenthic/biz-grow?logo=javascript&color=%23BEF9C6)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/274957a5-5004-4d0e-bde5-ec47ba9a6777/deploy-status)](https://app.netlify.com/projects/bizgow-app/deploys)
+![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FkenTHiC%2Fbiz-grow%2Frefs%2Fheads%2Fmain%2Fpackage.json&query=%24.state&logoColor=%23ffffff&label=state&labelColor=%23545A61&color=%23BEF9C6)
 
 </div>
 
@@ -29,7 +30,7 @@
 
 ## Table of Contents
 
-- [🌟 What's New in v1.1.0](#-whats-new-in-v110)
+- [🌟 What's New in v1.3.3](#-whats-new-in-v133)
 - [✨ Features](#-features)
 - [🚀 Quick Start](#-quick-start)
 - [🎯 First Time Setup](#-first-time-setup)
@@ -43,17 +44,17 @@
 
 ---
 
-## 🌟 What's New in v1.1.0
+## 🌟 What's New in v1.3.3
 
-> **Major Update**: Complete data management overhaul with enterprise-grade features!
+> **Major Update**: Multi-selection functionality, professional UI modals, and critical bug fixes!
 
-- 🗃️ **Advanced Data Management** - Multi-format import/export (JSON, CSV, Excel)
-- 📊 **Enhanced Analytics** - 8 comprehensive data summary cards with growth indicators
-- 📈 **New Visualizations** - Trend sparklines, interactive pie charts, category breakdowns
-- 🚫 **No More Sample Data** - Clean start with professional onboarding experience
-- 🧪 **Comprehensive Testing** - Built-in test suite with 100% coverage
-- 💾 **Auto-Backup System** - Automatic data backup and restore functionality
-- 🎯 **Smart Empty States** - Helpful guidance throughout the application
+- ✅ **Multi-Selection System** - Bulk operations with checkboxes and "Select All" functionality
+- 🎨 **Professional UI Modals** - Custom confirmation dialogs replacing browser alerts
+- � **Critical Bug Fixes** - Resolved duplicate ID issues and selection state problems
+- � **Enhanced Performance** - Set-based selection logic for guaranteed uniqueness
+- 📊 **Improved Data Management** - Better CSV import detection and error handling
+- 🎯 **Better User Experience** - Toast notifications and non-blocking interactions
+- 🛠️ **Code Quality** - Comprehensive refactoring and optimization improvements
 
 ---
 
@@ -364,7 +365,7 @@ NODE_ENV=development
 
 ### Brand Customization
 
-#### **BizGrow Brand Colors (v1.1.0):**
+#### **BizGrow Brand Colors (v1.3.3):**
 ```css
 :root {
   --primary-color: #3498DB;      /* Medium Blue */
@@ -474,7 +475,7 @@ We welcome contributions! Here's how to get involved:
 
 ## 📊 Project Stats
 
-- **Version**: 1.1.0 (Major Update)
+- **Version**: 1.3.3 (Beta Release)
 - **Total Components**: 25+ React components
 - **Test Coverage**: 100% for critical functionality
 - **Supported Formats**: JSON, CSV, Excel
@@ -483,7 +484,7 @@ We welcome contributions! Here's how to get involved:
 
 ## 🗺️ Roadmap
 
-### **v1.2.0 - Planned Features**
+### **v1.4.0 - Planned Features**
 - 🔐 **User Authentication** - Multi-user support with secure login
 - ☁️ **Cloud Sync** - Synchronize data across devices
 - 📱 **Mobile App** - Native mobile applications
@@ -491,7 +492,7 @@ We welcome contributions! Here's how to get involved:
 - 📊 **Custom Reports** - Build custom reports and dashboards
 - 🔗 **API Integration** - Connect with external services
 
-### **v1.3.0 - Future Vision**
+### **v1.5.0 - Future Vision**
 - 👥 **Team Collaboration** - Multi-user workspaces
 - 🎯 **Goal Tracking** - Set and track business goals
 - 📈 **Advanced Forecasting** - ML-powered predictions
@@ -539,7 +540,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-### **🎉 BizGrow v1.1.0 - World-Class Business Analytics**
+### **🎉 BizGrow v1.3.3 - World-Class Business Analytics**
 
 **Built with ❤️ by kenTHiC**
 
