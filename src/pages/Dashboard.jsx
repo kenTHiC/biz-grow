@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Revenue, Expense, Customer } from "@/entities/all";
-import { DollarSign, TrendingDown, Users, Target } from "lucide-react";
+import { DollarSign, TrendingDown, Users, Target, Database, AlertCircle } from "lucide-react";
 import { format, subDays, startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 
 import KPICard from "../components/dashboard/KPICard";
@@ -8,6 +8,8 @@ import RevenueChart from "../components/dashboard/RevenueChart";
 import ExpenseChart from "../components/dashboard/ExpenseChart";
 import CustomerGrowthChart from "../components/dashboard/CustomerGrowthChart";
 import DateRangeFilter from "../components/dashboard/DateRangeFilter";
+import DataManager from "../components/DataManager";
+import dataStore from "../store/dataStore";
 
 export default function Dashboard() {
   const [revenues, setRevenues] = useState([]);
@@ -19,6 +21,9 @@ export default function Dashboard() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
+  const [showDataManager, setShowDataManager] = useState(false);
+  const [isFirstTime, setIsFirstTime] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -27,12 +32,19 @@ export default function Dashboard() {
   const loadData = async () => {
     setIsLoading(true);
     try {
+      // Check if this is a first-time user
+      const userSettings = dataStore.getUserSettings();
+      const hasData = dataStore.customers.length > 0 || dataStore.revenues.length > 0 || dataStore.expenses.length > 0;
+
+      setIsFirstTime(!hasData && userSettings.showSampleData !== false);
+      setShowWelcome(!hasData && userSettings.showSampleData !== false);
+
       const [revenueData, expenseData, customerData] = await Promise.all([
         Revenue.list('-date'),
         Expense.list('-date'),
         Customer.list('-acquisition_date')
       ]);
-      
+
       setRevenues(revenueData);
       setExpenses(expenseData);
       setCustomers(customerData);
@@ -119,6 +131,15 @@ export default function Dashboard() {
     setIsExporting(false);
   };
 
+  const handleDataChange = () => {
+    loadData();
+  };
+
+  const handleDismissWelcome = () => {
+    setShowWelcome(false);
+    dataStore.updateUserSettings({ showSampleData: false });
+  };
+
   if (isLoading) {
     return (
       <div className="p-8">
@@ -148,9 +169,60 @@ export default function Dashboard() {
             <h1 className="text-4xl font-bold text-slate-900 mb-2">Business Dashboard</h1>
             <p className="text-slate-600 text-lg">Track your business performance and growth</p>
           </div>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowDataManager(true)}
+              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <Database className="w-4 h-4" />
+              Manage Data
+            </button>
+          </div>
         </div>
 
-        <DateRangeFilter 
+        {/* Welcome Banner for First-Time Users */}
+        {showWelcome && (
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
+            <div className="flex items-start justify-between">
+              <div className="flex items-start gap-4">
+                <div className="bg-blue-100 p-2 rounded-lg">
+                  <AlertCircle className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-blue-900 mb-2">
+                    Welcome to BizGrow! 🎉
+                  </h3>
+                  <p className="text-blue-800 mb-4">
+                    You're currently viewing sample data to help you explore the dashboard.
+                    Ready to add your own business data?
+                  </p>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setShowDataManager(true)}
+                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      Import Your Data
+                    </button>
+                    <button
+                      onClick={handleDismissWelcome}
+                      className="bg-white text-blue-600 border border-blue-300 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors"
+                    >
+                      Continue with Sample Data
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={handleDismissWelcome}
+                className="text-blue-400 hover:text-blue-600 transition-colors"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        )}
+
+        <DateRangeFilter
           dateRange={dateRange}
           onDateRangeChange={setDateRange}
           onExport={handleExport}
@@ -203,6 +275,13 @@ export default function Dashboard() {
 
         <CustomerGrowthChart data={customerChartData} />
       </div>
+
+      {/* Data Manager Modal */}
+      <DataManager
+        isOpen={showDataManager}
+        onClose={() => setShowDataManager(false)}
+        onDataChange={handleDataChange}
+      />
     </div>
   );
 }

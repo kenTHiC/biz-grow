@@ -1,11 +1,17 @@
-// Data Store with localStorage persistence
+// Enhanced Data Store with localStorage persistence and data management
 import { format, subDays, startOfMonth, endOfMonth } from 'date-fns';
 
 const STORAGE_KEYS = {
   CUSTOMERS: 'biz-grow-customers',
   REVENUES: 'biz-grow-revenues',
-  EXPENSES: 'biz-grow-expenses'
+  EXPENSES: 'biz-grow-expenses',
+  USER_SETTINGS: 'biz-grow-user-settings',
+  DATA_BACKUP: 'biz-grow-data-backup',
+  FIRST_TIME_USER: 'biz-grow-first-time'
 };
+
+const APP_VERSION = '1.1.0';
+const DATA_VERSION = '1.0.0';
 
 // Initial sample data
 const initialCustomers = [
@@ -140,7 +146,7 @@ const initialExpenses = [
   }
 ];
 
-// Utility functions
+// Enhanced utility functions
 const loadFromStorage = (key, defaultData) => {
   try {
     const stored = localStorage.getItem(key);
@@ -154,23 +160,81 @@ const loadFromStorage = (key, defaultData) => {
 const saveToStorage = (key, data) => {
   try {
     localStorage.setItem(key, JSON.stringify(data));
+    // Auto-backup critical data
+    if (key !== STORAGE_KEYS.DATA_BACKUP) {
+      createAutoBackup();
+    }
   } catch (error) {
     console.error(`Error saving ${key} to storage:`, error);
+    throw new Error(`Failed to save data: ${error.message}`);
   }
 };
 
 const generateId = (existingItems) => {
-  return existingItems.length > 0 
-    ? Math.max(...existingItems.map(item => item.id)) + 1 
+  return existingItems.length > 0
+    ? Math.max(...existingItems.map(item => item.id)) + 1
     : 1;
 };
 
-// Data Store Class
+const createAutoBackup = () => {
+  try {
+    const backupData = {
+      timestamp: new Date().toISOString(),
+      version: DATA_VERSION,
+      customers: localStorage.getItem(STORAGE_KEYS.CUSTOMERS),
+      revenues: localStorage.getItem(STORAGE_KEYS.REVENUES),
+      expenses: localStorage.getItem(STORAGE_KEYS.EXPENSES),
+      userSettings: localStorage.getItem(STORAGE_KEYS.USER_SETTINGS)
+    };
+    localStorage.setItem(STORAGE_KEYS.DATA_BACKUP, JSON.stringify(backupData));
+  } catch (error) {
+    console.warn('Auto-backup failed:', error);
+  }
+};
+
+const isFirstTimeUser = () => {
+  return !localStorage.getItem(STORAGE_KEYS.FIRST_TIME_USER);
+};
+
+const markUserAsReturning = () => {
+  localStorage.setItem(STORAGE_KEYS.FIRST_TIME_USER, 'false');
+};
+
+const clearAllData = () => {
+  Object.values(STORAGE_KEYS).forEach(key => {
+    if (key !== STORAGE_KEYS.USER_SETTINGS) {
+      localStorage.removeItem(key);
+    }
+  });
+};
+
+// Enhanced Data Store Class
 class DataStore {
   constructor() {
-    this.customers = loadFromStorage(STORAGE_KEYS.CUSTOMERS, initialCustomers);
-    this.revenues = loadFromStorage(STORAGE_KEYS.REVENUES, initialRevenues);
-    this.expenses = loadFromStorage(STORAGE_KEYS.EXPENSES, initialExpenses);
+    this.isFirstTime = isFirstTimeUser();
+    this.userSettings = loadFromStorage(STORAGE_KEYS.USER_SETTINGS, {
+      currency: 'USD',
+      dateFormat: 'yyyy-MM-dd',
+      theme: 'light',
+      autoBackup: true,
+      showSampleData: this.isFirstTime
+    });
+
+    // Load data - use empty arrays for first-time users unless they want sample data
+    if (this.isFirstTime && !this.userSettings.showSampleData) {
+      this.customers = [];
+      this.revenues = [];
+      this.expenses = [];
+    } else {
+      this.customers = loadFromStorage(STORAGE_KEYS.CUSTOMERS, this.isFirstTime ? initialCustomers : []);
+      this.revenues = loadFromStorage(STORAGE_KEYS.REVENUES, this.isFirstTime ? initialRevenues : []);
+      this.expenses = loadFromStorage(STORAGE_KEYS.EXPENSES, this.isFirstTime ? initialExpenses : []);
+    }
+
+    // Mark user as returning after first load
+    if (this.isFirstTime) {
+      markUserAsReturning();
+    }
   }
 
   // Customer methods
@@ -326,6 +390,197 @@ class DataStore {
       expenses: filteredExpenses,
       customers: filteredCustomers
     };
+  }
+
+  // Data Management Methods
+  exportAllData(format = 'json') {
+    const exportData = {
+      metadata: {
+        exportDate: new Date().toISOString(),
+        version: DATA_VERSION,
+        appVersion: APP_VERSION,
+        format: format
+      },
+      customers: this.customers,
+      revenues: this.revenues,
+      expenses: this.expenses,
+      userSettings: this.userSettings
+    };
+
+    return exportData;
+  }
+
+  async importData(data, options = {}) {
+    const {
+      merge = false,
+      validateData = true,
+      createBackup = true
+    } = options;
+
+    try {
+      if (createBackup) {
+        this.createManualBackup();
+      }
+
+      if (validateData) {
+        this.validateImportData(data);
+      }
+
+      if (!merge) {
+        // Clear existing data
+        this.customers = [];
+        this.revenues = [];
+        this.expenses = [];
+      }
+
+      // Import customers
+      if (data.customers && Array.isArray(data.customers)) {
+        const importedCustomers = data.customers.map(customer => ({
+          ...customer,
+          id: merge ? generateId([...this.customers, ...data.customers]) : customer.id || generateId(this.customers)
+        }));
+
+        if (merge) {
+          this.customers = [...this.customers, ...importedCustomers];
+        } else {
+          this.customers = importedCustomers;
+        }
+      }
+
+      // Import revenues
+      if (data.revenues && Array.isArray(data.revenues)) {
+        const importedRevenues = data.revenues.map(revenue => ({
+          ...revenue,
+          id: merge ? generateId([...this.revenues, ...data.revenues]) : revenue.id || generateId(this.revenues)
+        }));
+
+        if (merge) {
+          this.revenues = [...this.revenues, ...importedRevenues];
+        } else {
+          this.revenues = importedRevenues;
+        }
+      }
+
+      // Import expenses
+      if (data.expenses && Array.isArray(data.expenses)) {
+        const importedExpenses = data.expenses.map(expense => ({
+          ...expense,
+          id: merge ? generateId([...this.expenses, ...data.expenses]) : expense.id || generateId(this.expenses)
+        }));
+
+        if (merge) {
+          this.expenses = [...this.expenses, ...importedExpenses];
+        } else {
+          this.expenses = importedExpenses;
+        }
+      }
+
+      // Save all data
+      saveToStorage(STORAGE_KEYS.CUSTOMERS, this.customers);
+      saveToStorage(STORAGE_KEYS.REVENUES, this.revenues);
+      saveToStorage(STORAGE_KEYS.EXPENSES, this.expenses);
+
+      return {
+        success: true,
+        imported: {
+          customers: data.customers?.length || 0,
+          revenues: data.revenues?.length || 0,
+          expenses: data.expenses?.length || 0
+        }
+      };
+
+    } catch (error) {
+      console.error('Import failed:', error);
+      throw new Error(`Import failed: ${error.message}`);
+    }
+  }
+
+  validateImportData(data) {
+    if (!data || typeof data !== 'object') {
+      throw new Error('Invalid data format');
+    }
+
+    // Validate structure
+    const validKeys = ['customers', 'revenues', 'expenses', 'metadata', 'userSettings'];
+    const hasValidData = Object.keys(data).some(key =>
+      validKeys.includes(key) && Array.isArray(data[key])
+    );
+
+    if (!hasValidData) {
+      throw new Error('No valid data arrays found');
+    }
+
+    // Validate customers
+    if (data.customers) {
+      data.customers.forEach((customer, index) => {
+        if (!customer.name || !customer.email) {
+          throw new Error(`Customer at index ${index} missing required fields (name, email)`);
+        }
+      });
+    }
+
+    // Validate revenues
+    if (data.revenues) {
+      data.revenues.forEach((revenue, index) => {
+        if (!revenue.amount || !revenue.date) {
+          throw new Error(`Revenue at index ${index} missing required fields (amount, date)`);
+        }
+      });
+    }
+
+    // Validate expenses
+    if (data.expenses) {
+      data.expenses.forEach((expense, index) => {
+        if (!expense.amount || !expense.date) {
+          throw new Error(`Expense at index ${index} missing required fields (amount, date)`);
+        }
+      });
+    }
+  }
+
+  createManualBackup() {
+    const backupData = this.exportAllData();
+    const backupKey = `${STORAGE_KEYS.DATA_BACKUP}-${Date.now()}`;
+    localStorage.setItem(backupKey, JSON.stringify(backupData));
+    return backupKey;
+  }
+
+  restoreFromBackup(backupKey) {
+    try {
+      const backupData = JSON.parse(localStorage.getItem(backupKey));
+      if (!backupData) {
+        throw new Error('Backup not found');
+      }
+
+      return this.importData(backupData, { merge: false, createBackup: false });
+    } catch (error) {
+      throw new Error(`Restore failed: ${error.message}`);
+    }
+  }
+
+  clearAllUserData() {
+    clearAllData();
+    this.customers = [];
+    this.revenues = [];
+    this.expenses = [];
+    this.userSettings = {
+      currency: 'USD',
+      dateFormat: 'yyyy-MM-dd',
+      theme: 'light',
+      autoBackup: true,
+      showSampleData: false
+    };
+  }
+
+  // User Settings Methods
+  updateUserSettings(newSettings) {
+    this.userSettings = { ...this.userSettings, ...newSettings };
+    saveToStorage(STORAGE_KEYS.USER_SETTINGS, this.userSettings);
+    return this.userSettings;
+  }
+
+  getUserSettings() {
+    return this.userSettings;
   }
 }
 
