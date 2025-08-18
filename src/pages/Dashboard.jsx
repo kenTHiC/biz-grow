@@ -8,7 +8,11 @@ import RevenueChart from "../components/dashboard/RevenueChart";
 import ExpenseChart from "../components/dashboard/ExpenseChart";
 import CustomerGrowthChart from "../components/dashboard/CustomerGrowthChart";
 import DateRangeFilter from "../components/dashboard/DateRangeFilter";
+import DataSummaryCards from "../components/dashboard/DataSummaryCards";
+import TrendSparklines from "../components/dashboard/TrendSparklines";
+import CategoryPieChart from "../components/dashboard/CategoryPieChart";
 import DataManager from "../components/DataManager";
+import TestRunner from "../components/TestRunner";
 import dataStore from "../store/dataStore";
 
 export default function Dashboard() {
@@ -22,11 +26,20 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
   const [showDataManager, setShowDataManager] = useState(false);
+  const [showTestRunner, setShowTestRunner] = useState(false);
   const [isFirstTime, setIsFirstTime] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
     loadData();
+
+    // Listen for custom events to open data manager
+    const handleOpenDataManager = () => setShowDataManager(true);
+    window.addEventListener('openDataManager', handleOpenDataManager);
+
+    return () => {
+      window.removeEventListener('openDataManager', handleOpenDataManager);
+    };
   }, []);
 
   const loadData = async () => {
@@ -177,43 +190,52 @@ export default function Dashboard() {
               <Database className="w-4 h-4" />
               Manage Data
             </button>
+            {process.env.NODE_ENV === 'development' && (
+              <button
+                onClick={() => setShowTestRunner(true)}
+                className="flex items-center gap-2 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+              >
+                🧪 Test Suite
+              </button>
+            )}
           </div>
         </div>
 
         {/* Welcome Banner for First-Time Users */}
-        {showWelcome && (
+        {(isFirstTime || (revenues.length === 0 && expenses.length === 0 && customers.length === 0)) && (
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-4">
                 <div className="bg-blue-100 p-2 rounded-lg">
-                  <AlertCircle className="w-6 h-6 text-blue-600" />
+                  <Database className="w-6 h-6 text-blue-600" />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-blue-900 mb-2">
                     Welcome to BizGrow! 🎉
                   </h3>
                   <p className="text-blue-800 mb-4">
-                    You're currently viewing sample data to help you explore the dashboard.
-                    Ready to add your own business data?
+                    Get started by importing your business data. BizGrow supports JSON, CSV, and Excel files
+                    to help you track revenue, expenses, and customers.
                   </p>
                   <div className="flex gap-3">
                     <button
                       onClick={() => setShowDataManager(true)}
                       className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                     >
+                      <Database className="w-4 h-4 inline mr-2" />
                       Import Your Data
                     </button>
                     <button
-                      onClick={handleDismissWelcome}
+                      onClick={() => setShowWelcome(false)}
                       className="bg-white text-blue-600 border border-blue-300 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors"
                     >
-                      Continue with Sample Data
+                      Explore Empty Dashboard
                     </button>
                   </div>
                 </div>
               </div>
               <button
-                onClick={handleDismissWelcome}
+                onClick={() => setShowWelcome(false)}
                 className="text-blue-400 hover:text-blue-600 transition-colors"
               >
                 ×
@@ -227,6 +249,13 @@ export default function Dashboard() {
           onDateRangeChange={setDateRange}
           onExport={handleExport}
           isExporting={isExporting}
+        />
+
+        {/* Enhanced Data Summary Cards */}
+        <DataSummaryCards
+          customers={customers}
+          revenues={revenues}
+          expenses={expenses}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -268,6 +297,28 @@ export default function Dashboard() {
           />
         </div>
 
+        {/* Trend Sparklines */}
+        <TrendSparklines
+          revenues={revenues}
+          expenses={expenses}
+          customers={customers}
+        />
+
+        {/* Category Pie Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <CategoryPieChart
+            data={expenses}
+            title="Expense Categories"
+            type="expense"
+          />
+          <CategoryPieChart
+            data={revenues}
+            title="Revenue Sources"
+            type="revenue"
+          />
+        </div>
+
+        {/* Original Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <RevenueChart data={revenueChartData} />
           <ExpenseChart data={expenseChartData} />
@@ -282,6 +333,14 @@ export default function Dashboard() {
         onClose={() => setShowDataManager(false)}
         onDataChange={handleDataChange}
       />
+
+      {/* Test Runner Modal (Development Only) */}
+      {process.env.NODE_ENV === 'development' && (
+        <TestRunner
+          isOpen={showTestRunner}
+          onClose={() => setShowTestRunner(false)}
+        />
+      )}
     </div>
   );
 }

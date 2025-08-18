@@ -13,138 +13,7 @@ const STORAGE_KEYS = {
 const APP_VERSION = '1.1.0';
 const DATA_VERSION = '1.0.0';
 
-// Initial sample data
-const initialCustomers = [
-  {
-    id: 1,
-    name: "Acme Corporation",
-    email: "contact@acme.com",
-    phone: "+1-555-0123",
-    company: "Acme Corporation",
-    status: "active",
-    acquisition_date: "2024-01-15",
-    total_value: 25000,
-    last_purchase_date: "2024-08-10"
-  },
-  {
-    id: 2,
-    name: "Tech Solutions Inc",
-    email: "info@techsolutions.com",
-    phone: "+1-555-0456",
-    company: "Tech Solutions Inc",
-    status: "active",
-    acquisition_date: "2024-02-20",
-    total_value: 18500,
-    last_purchase_date: "2024-08-05"
-  },
-  {
-    id: 3,
-    name: "Global Enterprises",
-    email: "sales@global.com",
-    phone: "+1-555-0789",
-    company: "Global Enterprises",
-    status: "potential",
-    acquisition_date: "2024-07-10",
-    total_value: 5000,
-    last_purchase_date: null
-  }
-];
 
-const initialRevenues = [
-  {
-    id: 1,
-    amount: 8500,
-    source: "Software License",
-    category: "licensing",
-    date: "2024-08-10",
-    customer_name: "Acme Corporation",
-    description: "Annual software license renewal"
-  },
-  {
-    id: 2,
-    amount: 12000,
-    source: "Consulting Services",
-    category: "consulting",
-    date: "2024-08-05",
-    customer_name: "Tech Solutions Inc",
-    description: "Q3 consulting project completion"
-  },
-  {
-    id: 3,
-    amount: 3200,
-    source: "Product Sales",
-    category: "product_sales",
-    date: "2024-08-01",
-    customer_name: "Global Enterprises",
-    description: "Initial product purchase"
-  },
-  {
-    id: 4,
-    amount: 5500,
-    source: "Subscription",
-    category: "subscription",
-    date: "2024-07-28",
-    customer_name: "Acme Corporation",
-    description: "Monthly subscription fee"
-  },
-  {
-    id: 5,
-    amount: 7800,
-    source: "Service Revenue",
-    category: "service_revenue",
-    date: "2024-07-25",
-    customer_name: "Tech Solutions Inc",
-    description: "Support services"
-  }
-];
-
-const initialExpenses = [
-  {
-    id: 1,
-    amount: 2500,
-    category: "software",
-    vendor: "Microsoft",
-    date: "2024-08-01",
-    description: "Office 365 licenses",
-    receipt_url: null
-  },
-  {
-    id: 2,
-    amount: 3200,
-    category: "rent",
-    vendor: "Property Management Co",
-    date: "2024-08-01",
-    description: "Monthly office rent",
-    receipt_url: null
-  },
-  {
-    id: 3,
-    amount: 1200,
-    category: "marketing",
-    vendor: "Google Ads",
-    date: "2024-07-30",
-    description: "Online advertising campaign",
-    receipt_url: null
-  },
-  {
-    id: 4,
-    amount: 800,
-    category: "utilities",
-    vendor: "Electric Company",
-    date: "2024-07-28",
-    description: "Monthly electricity bill",
-    receipt_url: null
-  },
-  {
-    id: 5,
-    amount: 1500,
-    category: "office_supplies",
-    vendor: "Office Depot",
-    date: "2024-07-25",
-    description: "Office furniture and supplies",
-    receipt_url: null
-  }
-];
 
 // Enhanced utility functions
 const loadFromStorage = (key, defaultData) => {
@@ -216,20 +85,13 @@ class DataStore {
       currency: 'USD',
       dateFormat: 'yyyy-MM-dd',
       theme: 'light',
-      autoBackup: true,
-      showSampleData: this.isFirstTime
+      autoBackup: true
     });
 
-    // Load data - use empty arrays for first-time users unless they want sample data
-    if (this.isFirstTime && !this.userSettings.showSampleData) {
-      this.customers = [];
-      this.revenues = [];
-      this.expenses = [];
-    } else {
-      this.customers = loadFromStorage(STORAGE_KEYS.CUSTOMERS, this.isFirstTime ? initialCustomers : []);
-      this.revenues = loadFromStorage(STORAGE_KEYS.REVENUES, this.isFirstTime ? initialRevenues : []);
-      this.expenses = loadFromStorage(STORAGE_KEYS.EXPENSES, this.isFirstTime ? initialExpenses : []);
-    }
+    // Always start with empty arrays - no sample data
+    this.customers = loadFromStorage(STORAGE_KEYS.CUSTOMERS, []);
+    this.revenues = loadFromStorage(STORAGE_KEYS.REVENUES, []);
+    this.expenses = loadFromStorage(STORAGE_KEYS.EXPENSES, []);
 
     // Mark user as returning after first load
     if (this.isFirstTime) {

@@ -1,16 +1,16 @@
 // Multi-format Data Exporter for BizGrow
 import * as XLSX from 'xlsx';
-import { format } from 'date-fns';
+import { format as formatDate } from 'date-fns';
 
 export class DataExporter {
-  static async exportData(data, format = 'json', options = {}) {
+  static async exportData(data, exportFormat = 'json', options = {}) {
     const {
-      filename = `bizgrow-export-${format(new Date(), 'yyyy-MM-dd')}`,
+      filename = `bizgrow-export-${formatDate(new Date(), 'yyyy-MM-dd')}`,
       includeMetadata = true,
       dateRange = null
     } = options;
 
-    switch (format.toLowerCase()) {
+    switch (exportFormat.toLowerCase()) {
       case 'json':
         return this.exportJSON(data, filename, { includeMetadata, dateRange });
       case 'csv':
@@ -19,7 +19,7 @@ export class DataExporter {
       case 'excel':
         return this.exportExcel(data, filename, { dateRange });
       default:
-        throw new Error(`Unsupported export format: ${format}`);
+        throw new Error(`Unsupported export format: ${exportFormat}`);
     }
   }
 
@@ -32,7 +32,7 @@ export class DataExporter {
       exportData.metadata = {
         exportDate: new Date().toISOString(),
         version: '1.1.0',
-        format: 'json',
+        exportFormat: 'json',
         dateRange: dateRange ? {
           from: dateRange.from.toISOString(),
           to: dateRange.to.toISOString()
@@ -200,9 +200,9 @@ export class DataExporter {
       .sort((a, b) => a - b);
 
     if (dates.length === 0) return 'N/A';
-    if (dates.length === 1) return format(dates[0], 'yyyy-MM-dd');
-    
-    return `${format(dates[0], 'yyyy-MM-dd')} to ${format(dates[dates.length - 1], 'yyyy-MM-dd')}`;
+    if (dates.length === 1) return formatDate(dates[0], 'yyyy-MM-dd');
+
+    return `${formatDate(dates[0], 'yyyy-MM-dd')} to ${formatDate(dates[dates.length - 1], 'yyyy-MM-dd')}`;
   }
 
   static filterByDateRange(data, dateRange) {
@@ -233,8 +233,72 @@ export class DataExporter {
     URL.revokeObjectURL(url);
   }
 
+  // Test export functionality
+  static testExport() {
+    const testData = {
+      customers: [
+        {
+          id: 1,
+          name: "Test Customer",
+          email: "test@example.com",
+          phone: "+1-555-0123",
+          company: "Test Corp",
+          status: "active",
+          acquisition_date: "2024-01-15",
+          total_value: 5000
+        }
+      ],
+      revenues: [
+        {
+          id: 1,
+          amount: 1500,
+          source: "Product Sales",
+          category: "product_sales",
+          date: "2024-08-01",
+          customer_name: "Test Customer"
+        }
+      ],
+      expenses: [
+        {
+          id: 1,
+          amount: 500,
+          category: "software",
+          vendor: "Software Company",
+          date: "2024-08-01",
+          description: "Monthly software license"
+        }
+      ]
+    };
+
+    console.log('Testing export functionality...');
+
+    // Test JSON export
+    try {
+      this.exportData(testData, 'json', { filename: 'test-export' });
+      console.log('✅ JSON export test passed');
+    } catch (error) {
+      console.error('❌ JSON export test failed:', error);
+    }
+
+    // Test CSV export
+    try {
+      this.exportData(testData, 'csv', { filename: 'test-export' });
+      console.log('✅ CSV export test passed');
+    } catch (error) {
+      console.error('❌ CSV export test failed:', error);
+    }
+
+    // Test Excel export
+    try {
+      this.exportData(testData, 'xlsx', { filename: 'test-export' });
+      console.log('✅ Excel export test passed');
+    } catch (error) {
+      console.error('❌ Excel export test failed:', error);
+    }
+  }
+
   // Template generators for different data types
-  static generateTemplate(dataType, format = 'csv') {
+  static generateTemplate(dataType, exportFormat = 'csv') {
     const templates = {
       customers: [
         {
@@ -275,7 +339,7 @@ export class DataExporter {
       throw new Error(`No template available for data type: ${dataType}`);
     }
 
-    return this.exportData({ [dataType]: templateData }, format, {
+    return this.exportData({ [dataType]: templateData }, exportFormat, {
       filename: `bizgrow-${dataType}-template`,
       includeMetadata: false
     });

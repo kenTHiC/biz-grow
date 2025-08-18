@@ -2,8 +2,20 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { motion } from "framer-motion";
+import { BarChart3 } from 'lucide-react';
 
 export default function RevenueChart({ data, title = "Revenue Trends" }) {
+  const EmptyState = () => (
+    <div className="h-80 flex flex-col items-center justify-center text-gray-500">
+      <BarChart3 className="w-16 h-16 mb-4 text-gray-400" />
+      <h3 className="text-lg font-medium text-gray-900 mb-2">No Revenue Data</h3>
+      <p className="text-center text-gray-600">
+        Add revenue transactions to see trends and analytics
+      </p>
+    </div>
+  );
+
+  const hasData = data && data.length > 0 && data.some(item => item.amount > 0);
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -15,8 +27,9 @@ export default function RevenueChart({ data, title = "Revenue Trends" }) {
           <CardTitle className="text-xl font-bold text-slate-900">{title}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
+          {hasData ? (
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis 
@@ -57,6 +70,9 @@ export default function RevenueChart({ data, title = "Revenue Trends" }) {
               </LineChart>
             </ResponsiveContainer>
           </div>
+          ) : (
+            <EmptyState />
+          )}
         </CardContent>
       </Card>
     </motion.div>
