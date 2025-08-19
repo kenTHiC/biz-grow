@@ -535,7 +535,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - ✨ **Feature Requests**: [GitHub Discussions](../../discussions)
 
 ### **Documentation**
-- 📖 **User Guide**: [Complete documentation](docs/)
+- 📖 **User Guide**: [Complete documentation](../../wiki)
 - 🎬 **Video Tutorials**: [YouTube Channel](https://www.youtube.com/embed/1FjwAr5wmGg)
 - 📚 **API Reference**: [Developer docs](docs/api/)
 - 🔧 **Setup Guide**: [Installation instructions](#-quick-start)
@@ -559,7 +559,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 [![GitHub forks](https://img.shields.io/github/forks/kenthic/biz-grow?style=social)](../../network/members)
 [![GitHub watchers](https://img.shields.io/github/watchers/kenthic/biz-grow?style=social)](../../watchers)
 
-**[🚀 Try Live Demo](https://bizgow-app.netlify.app) • [📖 Read Docs](docs/)**
+**[🚀 Try Live Demo](https://bizgow-app.netlify.app) • [📖 Read Docs](../../wiki)**
 
 [![Discord](https://img.shields.io/badge/Discord-Community-5865F2?style=for-the-badge&logo=discord)](https://discord.gg/s27WGufPgp)
 
