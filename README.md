@@ -5,7 +5,6 @@
 ![BizGrow Logo](https://img.shields.io/badge/BizGrow-Analytics%20Dashboard-3498DB?style=for-the-badge&logo=trending-up&logoColor=white)
 
 [![Version](https://img.shields.io/badge/Version-1.3.3-2E86AB?style=for-the-badge)](https://github.com/kenthic/biz-grow/releases/tag/v1.3.3)
-[![Release](https://img.shields.io/github/v/release/kenthic/biz-grow?style=for-the-badge&color=5DADE2)](https://github.com/kenthic/biz-grow/releases)
 [![Tests](https://img.shields.io/badge/Tests-Passing-22c55e?style=for-the-badge&logo=check-circle)](src/utils/testSuite.js)
 [![License](https://img.shields.io/badge/License-MIT-1B4F72?style=for-the-badge)](LICENSE)
 
