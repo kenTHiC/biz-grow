@@ -4,7 +4,7 @@
 
 ![BizGrow Logo](https://img.shields.io/badge/BizGrow-Analytics%20Dashboard-3498DB?style=for-the-badge&logo=trending-up&logoColor=white)
 
-[![Version](https://img.shields.io/badge/Version-1.3.3-2E86AB?style=for-the-badge)](https://github.com/kenthic/biz-grow/releases/tag/v1.3.3)
+[![Version](https://img.shields.io/badge/Version-1.3.3%20Beta-2E86AB?style=for-the-badge)](https://github.com/kenthic/biz-grow/releases/tag/v1.3.3)
 [![Tests](https://img.shields.io/badge/Tests-Passing-22c55e?style=for-the-badge&logo=check-circle)](src/utils/testSuite.js)
 [![License](https://img.shields.io/badge/License-MIT-1B4F72?style=for-the-badge)](LICENSE)
 
@@ -16,7 +16,7 @@
 
 **A world-class business analytics dashboard with advanced data management, multi-format import/export, and enterprise-grade visualizations.**
 
-[🚀 Live Demo](https://bizgow-app.netlify.app) • [📖 Documentation](../../wiki) • [🎬 Video Demo](https://www.youtube.com/embed/1FjwAr5wmGg) • [💬 Discord](https://discord.gg/s27WGufPgp)
+[🚀 Live Demo](https://bizgow-app.netlify.app) • [📚 Documentation](https://github.com/kenTHiC/biz-grow/wiki) • [📖 Marketing Site](docs/) • [🎬 Video Demo](https://www.youtube.com/embed/1FjwAr5wmGg) • [💬 Discord](https://discord.gg/s27WGufPgp)
 
 ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FkenTHiC%2Fbiz-grow%2Frefs%2Fheads%2Fmain%2Fpackage.json&query=%24.version&prefix=v&logo=refinedgithub&logoColor=%23ffffff&label=release&labelColor=%23545A61&color=%23BEF9C6)
 ![GitHub top language](https://img.shields.io/github/languages/top/kenthic/biz-grow?logo=javascript&color=%23BEF9C6)
@@ -32,14 +32,10 @@
 - [🌟 What's New in v1.3.3](#-whats-new-in-v133)
 - [✨ Features](#-features)
 - [🚀 Quick Start](#-quick-start)
-- [🎯 First Time Setup](#-first-time-setup)
-- [📊 Sample Data Templates](#-sample-data-templates)
-- [🔧 Configuration & Customization](#-configuration--customization)
-- [🧪 Testing & Quality Assurance](#-testing--quality-assurance)
-- [🚀 Deployment](#-deployment)
+- [📚 Documentation](#-documentation)
+- [🧪 Testing](#-testing)
 - [🤝 Contributing](#-contributing)
-- [📝 License](#-license)
-- [🙏 Acknowledgments](#-acknowledgments)
+- [📞 Support & Community](#-support--community)
 
 ---
 
@@ -47,13 +43,13 @@
 
 > **Major Update**: Multi-selection functionality, professional UI modals, and critical bug fixes!
 
+**Key Highlights:**
 - ✅ **Multi-Selection System** - Bulk operations with checkboxes and "Select All" functionality
 - 🎨 **Professional UI Modals** - Custom confirmation dialogs replacing browser alerts
+- 🧪 **Enhanced Testing Suite** - 25+ comprehensive tests with visual test runner
 - 🪲 **Critical Bug Fixes** - Resolved duplicate ID issues and selection state problems
-- ⏱ **Enhanced Performance** - Set-based selection logic for guaranteed uniqueness
-- 📊 **Improved Data Management** - Better CSV import detection and error handling
-- 🎯 **Better User Experience** - Toast notifications and non-blocking interactions
-- 🛠️ **Code Quality** - Comprehensive refactoring and optimization improvements
+
+**📋 [View Complete Release Notes](RELEASE.md)** | **📜 [Version History](CHANGELOG.md)**
 
 ---
 
@@ -101,21 +97,7 @@
 - **Loading States** - Professional loading indicators throughout
 - **Error Recovery** - Comprehensive error handling with user guidance
 
-## 🛠️ Tech Stack
 
-| Technology | Purpose | Version | New in v1.1.0 |
-|------------|---------|---------|----------------|
-| **React** | Frontend Framework | 18.2.0 | |
-| **Vite** | Build Tool & Dev Server | 4.4.5 | |
-| **Tailwind CSS** | Styling Framework | 3.3.3 | |
-| **Recharts** | Data Visualization | 2.8.0 | ✨ Enhanced |
-| **Framer Motion** | Animations | 10.16.0 | |
-| **React Router** | Navigation | 6.15.0 | |
-| **Lucide React** | Icons | 0.279.0 | |
-| **date-fns** | Date Utilities | 2.30.0 | |
-| **XLSX** | Excel Import/Export | 0.18.5 | ✨ **NEW** |
-| **clsx** | Conditional Classes | 2.0.0 | |
-| **CVA** | Class Variance Authority | 0.7.0 | |
 
 ## 🚀 Quick Start
 
@@ -152,20 +134,6 @@
    http://localhost:5173
    ```
 
-### 🎯 First Time Setup
-
-1. **Welcome Screen** - You'll see a clean dashboard with no sample data
-2. **Import Your Data** - Click "Manage Data" to import your business data
-3. **Supported Formats** - Upload JSON, CSV, or Excel files
-4. **Explore Analytics** - View comprehensive insights and visualizations
-
-### 📊 Sample Data Templates
-
-Download pre-formatted templates to get started quickly:
-- **Customers Template** - Customer information format
-- **Revenues Template** - Revenue transaction format
-- **Expenses Template** - Expense transaction format
-
 ### Build for Production
 
 ```bash
@@ -176,175 +144,48 @@ yarn build
 
 The built files will be in the `dist/` directory, ready for deployment.
 
-## 📖 Comprehensive Documentation
+## 📚 Documentation
 
-### 🏗️ Project Structure (v1.1.0)
+For comprehensive documentation, guides, and tutorials, visit our [📚 GitHub Wiki](https://github.com/kenTHiC/biz-grow/wiki).
 
-```
-biz-grow/
-├── docs/                   # Marketing website and documentation
-│   ├── index.html         # Marketing landing page
-│   ├── styles/            # Website styles
-│   └── scripts/           # Website functionality
-├── public/                # Static assets
-├── src/
-│   ├── components/        # Reusable UI components
-│   │   ├── dashboard/     # Dashboard-specific components
-│   │   │   ├── DataSummaryCards.jsx      # ✨ NEW: 8 comprehensive stat cards
-│   │   │   ├── TrendSparklines.jsx       # ✨ NEW: 6-month trend visualization
-│   │   │   ├── CategoryPieChart.jsx      # ✨ NEW: Interactive pie charts
-│   │   │   ├── RevenueChart.jsx          # ✅ Enhanced with empty states
-│   │   │   ├── ExpenseChart.jsx          # ✅ Enhanced with empty states
-│   │   │   └── CustomerGrowthChart.jsx   # Customer growth visualization
-│   │   ├── DataManager.jsx               # ✨ NEW: Centralized data management
-│   │   ├── TestRunner.jsx                # ✨ NEW: Built-in test suite
-│   │   ├── EnhancedDatePicker.jsx        # ✨ NEW: Advanced date selection
-│   │   └── ui/                           # Base UI components
-│   ├── entities/          # Data models and API layer
-│   ├── pages/             # Application pages
-│   ├── store/             # Enhanced data management
-│   │   └── dataStore.js   # ✅ Enhanced with backup/restore
-│   ├── utils/             # Utility functions
-│   │   ├── dataImporter.js               # ✨ NEW: Multi-format import engine
-│   │   ├── dataExporter.js               # ✨ NEW: Advanced export system
-│   │   ├── advancedAnalytics.js          # ✨ NEW: Comprehensive analytics
-│   │   └── testSuite.js                  # ✨ NEW: Automated testing
-│   ├── App.jsx            # Main application component
-│   └── main.jsx           # Application entry point
-├── CHANGELOG.md           # Version history and updates
-├── package.json           # Dependencies and scripts (v1.1.0)
-└── README.md             # This comprehensive documentation
+### 📖 **Detailed Guides Available**
+
+- **[📥 Installation Guide](https://github.com/kenTHiC/biz-grow/wiki/Installation-Guide)** - Complete setup instructions
+- **[⚡ Quick Start](https://github.com/kenTHiC/biz-grow/wiki/Quick-Start)** - Get running in 5 minutes
+- **[✅ Multi-Selection System](https://github.com/kenTHiC/biz-grow/wiki/Multi-Selection-System)** - New v1.3.3 feature guide
+- **[🧪 Testing Guide](https://github.com/kenTHiC/biz-grow/wiki/Testing-Guide)** - Comprehensive testing documentation
+- **[🔧 API Reference](https://github.com/kenTHiC/biz-grow/wiki/API-Reference)** - Technical documentation
+- **[🐛 Troubleshooting](https://github.com/kenTHiC/biz-grow/wiki/Troubleshooting)** - Common issues and solutions
+
+## 🧪 Testing
+
+### **Enhanced Testing Suite v1.3.3**
+
+BizGrow includes a comprehensive testing framework with 25+ automated tests:
+
+#### **Visual Testing Interface**
+1. **Dashboard Access** - Click "Test Suite" button on Dashboard
+2. **Test Selection** - Choose from All Tests, Quick Test, Multi-Selection, etc.
+3. **Run Tests** - Execute tests with real-time results
+4. **Keyboard Shortcut** - Use `Ctrl+Shift+T` to toggle test runner
+
+#### **Console Testing**
+```javascript
+// Run in browser console (F12)
+window.BizGrowTestSuite.runAllTests()     // Full test suite
+window.BizGrowTestSuite.quickTest()       // Essential tests
+window.BizGrowTestSuite.testMultiSelection() // v1.3.3 features
+window.BizGrowTestSuite.debugState()      // Debug info
 ```
 
-### 🎯 Key Features & Usage
+#### **Test Categories**
+- **Multi-Selection System** - Bulk operations and checkbox functionality
+- **Professional UI Modals** - Custom confirmation dialogs
+- **ID Management** - Data integrity and uniqueness
+- **Performance Testing** - Memory usage and large dataset handling
+- **Version Synchronization** - Automatic version management
 
-#### 🏠 **Enhanced Dashboard**
-The main overview featuring:
-- **8 Data Summary Cards** - Comprehensive business metrics with growth indicators
-- **Trend Sparklines** - 6-month trends for revenue, expenses, customers, and profit
-- **Interactive Pie Charts** - Category breakdowns for expenses and revenue sources
-- **Professional Empty States** - Helpful guidance when no data exists
-- **Smart Welcome System** - Context-aware onboarding for new users
-
-#### 🗃️ **Data Management Hub**
-Centralized data operations:
-- **Multi-Format Import** - JSON, CSV, Excel with intelligent field mapping
-- **Import Preview** - Review and validate data before importing
-- **Multi-Format Export** - JSON, CSV, Excel with comprehensive metadata
-- **Auto-Backup System** - Automatic backups on every data change
-- **Manual Backups** - Create restore points before major operations
-- **Template Downloads** - Pre-formatted templates for easy data entry
-
-#### 📊 **Advanced Analytics Engine**
-Enterprise-grade business intelligence:
-- **Financial Metrics** - Revenue, expenses, profit margins, cash flow analysis
-- **Customer Intelligence** - CLV, CAC, churn rates, value distribution
-- **Growth Analysis** - Revenue/customer growth rates with trend indicators
-- **Performance Scoring** - Overall business health score with benchmarks
-- **Forecasting** - Revenue, expense, and customer growth projections
-
-#### 🧪 **Enhanced Testing Suite v1.3.3**
-Comprehensive testing system for beta stability:
-- **25+ Automated Tests** - Multi-selection, modals, ID management, data validation
-- **Performance Testing** - Memory usage, large dataset handling, Set operations
-- **Error Simulation** - Network failures, storage issues, edge cases
-- **Development Utilities** - State debugging, storage analysis, error injection
-- **Real-time Results** - Pass/fail status with detailed error messages
-- **Export Results** - JSON export with environment details for bug reports
-
-### 🗄️ Enhanced Data Management
-
-The application features enterprise-grade data management:
-
-- **Multi-Format Support** - Import/export JSON, CSV, Excel files
-- **Intelligent Field Mapping** - Automatic detection of data types and fields
-- **Data Validation** - Comprehensive validation with error reporting
-- **Auto-Backup System** - Automatic backups on every data change
-- **Manual Backups** - Create restore points before major operations
-- **localStorage Persistence** - All data automatically saved to browser storage
-- **Real-time Updates** - Changes reflect immediately across all components
-
-## 🎯 Comprehensive Usage Guide
-
-### 🚀 Getting Started (First Time Users)
-
-1. **Launch BizGrow** - Open the application in your browser
-2. **Welcome Screen** - You'll see a clean dashboard with no sample data
-3. **Import Your Data** - Click "Manage Data" to access the data management hub
-4. **Choose Import Method**:
-   - Upload existing files (JSON, CSV, Excel)
-   - Download templates and fill them out
-   - Start fresh and add data manually
-
-### 📥 Importing Your Business Data
-
-#### **From Excel/CSV Files:**
-1. Click **"Manage Data"** → **"Import Data"** tab
-2. **Select File** - Choose your Excel (.xlsx) or CSV file
-3. **Preview Data** - Review the imported data and field mappings
-4. **Choose Import Option**:
-   - **Replace All Data** - Clear existing data and import new
-   - **Merge with Existing** - Add to current data
-5. **Confirm Import** - Click to complete the process
-
-#### **Using Templates:**
-1. **Download Templates** - Get pre-formatted templates for customers, revenues, expenses
-2. **Fill Templates** - Add your business data using the provided format
-3. **Import Templates** - Upload the completed templates
-
-#### **Supported Data Formats:**
-- **JSON** - Native BizGrow format with full metadata
-- **CSV** - Comma-separated values with intelligent field mapping
-- **Excel** - Multi-sheet Excel files (.xlsx, .xls)
-
-### 📊 Understanding Your Analytics
-
-#### **Data Summary Cards (8 Cards):**
-1. **Total Revenue** - Sum of all income with growth indicators
-2. **Total Expenses** - Sum of all expenses with transaction count
-3. **Net Profit** - Revenue minus expenses with profit margin
-4. **Total Customers** - Customer count with active/potential breakdown
-5. **Avg Revenue/Transaction** - Average transaction value
-6. **Avg Customer Value** - Average lifetime customer value
-7. **Data Range** - Span of your data with date range
-8. **Profit Margin** - Profitability percentage with performance rating
-
-#### **Trend Sparklines (4 Mini-Charts):**
-1. **Revenue Trend** - 6-month revenue trend with growth percentage
-2. **Expense Trend** - 6-month expense analysis
-3. **Customer Growth** - New customer acquisition trends
-4. **Net Profit Trend** - Overall profitability trends
-
-#### **Interactive Pie Charts:**
-1. **Expense Categories** - Visual breakdown of where money is spent
-2. **Revenue Sources** - Analysis of income sources and categories
-### 📤 Exporting Your Data
-
-#### **Multiple Export Formats:**
-1. **JSON Export** - Complete data with metadata (best for backup)
-2. **CSV Export** - Separate CSV files for each data type (great for spreadsheets)
-3. **Excel Export** - Multi-sheet Excel file with summary (perfect for analysis)
-
-#### **Export Process:**
-1. Click **"Manage Data"** → **"Export Data"** tab
-2. **Choose Format** - Select JSON, CSV, or Excel
-3. **Download** - Files are automatically downloaded to your device
-
-### 🧪 Testing Your Installation
-
-#### **Built-in Test Suite:**
-1. **Development Mode** - Test button appears in development
-2. **Run Tests** - Click "Test Suite" to run comprehensive tests
-3. **View Results** - See pass/fail status for all functionality
-4. **Export Results** - Copy test results for debugging
-
-#### **Manual Testing Checklist:**
-- ✅ Import data from different formats (JSON, CSV, Excel)
-- ✅ View analytics and charts with your data
-- ✅ Export data in different formats
-- ✅ Create manual backups and restore
-- ✅ Test date range filtering
-- ✅ Verify empty state handling
+**📚 For detailed testing documentation, see [Testing Guide](https://github.com/kenTHiC/biz-grow/wiki/Testing-Guide)**
 
 ## 🔧 Configuration & Customization
 
@@ -355,7 +196,7 @@ Create a `.env` file in the root directory:
 ```env
 # Application Configuration
 VITE_APP_NAME=BizGrow Dashboard
-VITE_APP_VERSION=1.1.0
+VITE_APP_VERSION=1.3.3
 
 # Development Configuration
 NODE_ENV=development
@@ -365,13 +206,6 @@ NODE_ENV=development
 ```
 
 ### Brand Customization
-
-#### **Version Management:**
-- **Automatic Synchronization** - Version number automatically synced from package.json
-- **Single Source of Truth** - No manual version updates needed in code
-- **Build Compatibility** - Works in both development and production builds
-- **Error Handling** - Fallback version if package.json cannot be read
-- **Testing Integration** - Version synchronization included in test suite
 
 #### **BizGrow Brand Colors (v1.3.3):**
 ```css
@@ -400,51 +234,6 @@ module.exports = {
 }
 ```
 
-## 🧪 Testing & Quality Assurance
-
-### **Enhanced Testing Suite v1.3.3**
-- **25+ Comprehensive Tests** covering all v1.3.3 functionality
-- **Multi-Selection Testing** - Set-based logic, ID normalization, bulk operations
-- **Modal System Testing** - Professional UI components, state management
-- **ID Management Testing** - Duplicate prevention, uniqueness enforcement
-- **Data Validation Testing** - CSV import, type detection, error scenarios
-- **Performance Testing** - Large datasets, memory usage, operation speed
-- **Error Handling Testing** - Edge cases, null safety, graceful failures
-- **Version Synchronization Testing** - Automatic version consistency across components
-- **Development Utilities** - State debugging, error simulation, storage analysis
-
-### **Running Tests**
-```bash
-# Development mode - use built-in test runner
-npm run dev
-# Click "Test Suite" button in the dashboard
-
-# Visual Testing Interface (Development Mode)
-# 1. Click "Test Suite" button next to "Manage Data" on Dashboard
-# 2. Use the TestRunner dialog to run tests with visual interface
-# 3. Keyboard shortcut: Ctrl+Shift+T to toggle TestRunner dialog
-
-# Console testing - Enhanced v1.3.3 commands
-# Open browser console and run:
-window.BizGrowTestSuite.runAllTests()     # Full test suite
-window.BizGrowTestSuite.quickTest()       # Essential tests only
-window.BizGrowTestSuite.debugState()      # Debug application state
-window.BizGrowTestSuite.exportResults()   # Export test results
-
-# Test version synchronization
-window.BizGrowTestSuite.testVersionSynchronization()
-# Check version info
-window.dataStore.getVersionInfo()
-```
-
-### **Test Coverage**
-- ✅ Multi-format data import (JSON, CSV, Excel)
-- ✅ Multi-format data export with validation
-- ✅ Data store operations and persistence
-- ✅ Backup and restore functionality
-- ✅ Advanced analytics calculations
-- ✅ User interface interactions
-
 ## 🚀 Deployment
 
 ### **Production Build**
@@ -459,12 +248,14 @@ npm run preview  # Test production build locally
 - **GitHub Pages** - Use the `docs/` folder for marketing site
 - **Traditional Hosting** - Upload `dist/` contents to web server
 
-### **Marketing Website**
-The `docs/` folder contains a complete marketing website:
-- Professional landing page
-- Feature showcase
-- Live demo links
-- Contact information
+### **Official Website**
+The `docs/` folder contains a complete marketing website (separate from documentation):
+- Professional landing page hosted on GitHub Pages
+- Feature showcase and screenshots
+- Live demo links and promotional content
+- Contact information and getting started guide
+
+**Note**: For comprehensive documentation, use the [GitHub Wiki](https://github.com/kenTHiC/biz-grow/wiki).
 
 ## 🤝 Contributing
 
@@ -498,15 +289,6 @@ We welcome contributions! Here's how to get involved:
 - Reference related issues
 - Ensure all tests pass
 
-## 📊 Project Stats
-
-- **Version**: 1.3.3 (Beta Release)
-- **Total Components**: 25+ React components
-- **Test Coverage**: 100% for critical functionality
-- **Supported Formats**: JSON, CSV, Excel
-- **Browser Support**: Chrome, Firefox, Safari, Edge
-- **Mobile Support**: Fully responsive design
-
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -535,10 +317,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - ✨ **Feature Requests**: [GitHub Discussions](../../discussions)
 
 ### **Documentation**
-- 📖 **User Guide**: [Complete documentation](../../wiki)
+- 📚 **Complete Documentation**: [GitHub Wiki](https://github.com/kenTHiC/biz-grow/wiki)
 - 🎬 **Video Tutorials**: [YouTube Channel](https://www.youtube.com/embed/1FjwAr5wmGg)
-- 📚 **API Reference**: [Developer docs](docs/api/)
-- 🔧 **Setup Guide**: [Installation instructions](#-quick-start)
+- 🔧 **API Reference**: [Developer Documentation](https://github.com/kenTHiC/biz-grow/wiki/API-Reference)
+- 📖 **Official Website**: [Project Website](docs/)
 
 ### **Stay Updated**
 - ⭐ **Star this repo** to stay updated with new releases
@@ -559,7 +341,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 [![GitHub forks](https://img.shields.io/github/forks/kenthic/biz-grow?style=social)](../../network/members)
 [![GitHub watchers](https://img.shields.io/github/watchers/kenthic/biz-grow?style=social)](../../watchers)
 
-**[🚀 Try Live Demo](https://bizgow-app.netlify.app) • [📖 Read Docs](../../wiki)**
+**[🚀 Try Live Demo](https://bizgow-app.netlify.app) • [📚 Read Documentation](https://github.com/kenTHiC/biz-grow/wiki)**
 
 [![Discord](https://img.shields.io/badge/Discord-Community-5865F2?style=for-the-badge&logo=discord)](https://discord.gg/s27WGufPgp)
 
