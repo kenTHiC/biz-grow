@@ -191,7 +191,7 @@ class BizGrowTestSuite {
     const generateLargeDataset = (size) => {
       const startTime = performance.now();
       const dataset = [];
-      
+
       for (let i = 0; i < size; i++) {
         dataset.push({
           id: i + 1,
@@ -199,13 +199,13 @@ class BizGrowTestSuite {
           value: Math.random() * 1000
         });
       }
-      
+
       const endTime = performance.now();
       return { dataset, generationTime: endTime - startTime };
     };
 
     const { dataset, generationTime } = generateLargeDataset(1000);
-    
+
     this.assert(
       dataset.length === 1000 && generationTime < 100,
       'Large dataset generation performance',
@@ -213,6 +213,69 @@ class BizGrowTestSuite {
     );
 
     this.log('✅ Performance tests completed', 'success');
+  }
+
+  // ===========================================
+  // VERSION SYNCHRONIZATION TESTS
+  // ===========================================
+
+  testVersionSynchronization() {
+    this.log('🧪 Testing Version Synchronization...', 'info');
+
+    try {
+      // Test 1: Check if dataStore version is accessible
+      const dataStore = window.dataStore;
+      if (dataStore && typeof dataStore.getAppVersion === 'function') {
+        const appVersion = dataStore.getAppVersion();
+
+        this.assert(
+          appVersion && typeof appVersion === 'string',
+          'DataStore version is accessible',
+          `Version: ${appVersion}`
+        );
+
+        // Test 2: Check version format (semantic versioning)
+        const versionRegex = /^\d+\.\d+\.\d+$/;
+        this.assert(
+          versionRegex.test(appVersion),
+          'Version follows semantic versioning format',
+          `Version format: ${appVersion}`
+        );
+
+        // Test 3: Check version info method
+        if (typeof dataStore.getVersionInfo === 'function') {
+          const versionInfo = dataStore.getVersionInfo();
+
+          this.assert(
+            versionInfo && versionInfo.app && versionInfo.data && versionInfo.source,
+            'Version info method works correctly',
+            `Source: ${versionInfo.source}, App: ${versionInfo.app}, Data: ${versionInfo.data}`
+          );
+
+          this.assert(
+            versionInfo.source === 'package.json' || versionInfo.source === 'fallback',
+            'Version source is correctly identified',
+            `Source: ${versionInfo.source}`
+          );
+        }
+
+      } else {
+        this.assert(
+          false,
+          'DataStore version methods not available',
+          'DataStore may not be loaded or version methods missing'
+        );
+      }
+
+    } catch (error) {
+      this.assert(
+        false,
+        'Version synchronization test failed',
+        `Error: ${error.message}`
+      );
+    }
+
+    this.log('✅ Version Synchronization tests completed', 'success');
   }
 
   // ===========================================
@@ -238,6 +301,7 @@ class BizGrowTestSuite {
       this.testModalSystem();
       this.testIdManagement();
       this.testPerformance();
+      this.testVersionSynchronization();
       
       // Generate summary
       this.endTime = performance.now();
@@ -399,6 +463,7 @@ if (typeof window !== 'undefined') {
     testModalSystem: () => testSuite.testModalSystem(),
     testIdManagement: () => testSuite.testIdManagement(),
     testPerformance: () => testSuite.testPerformance(),
+    testVersionSynchronization: () => testSuite.testVersionSynchronization(),
     debugState: () => testSuite.debugState(),
     exportResults: () => testSuite.exportResults(),
     getResults: () => testSuite.testResults

@@ -1,5 +1,6 @@
 // Enhanced Data Store with localStorage persistence and data management
 import { format, subDays, startOfMonth, endOfMonth } from 'date-fns';
+import packageJson from '../../package.json';
 
 const STORAGE_KEYS = {
   CUSTOMERS: 'biz-grow-customers',
@@ -10,10 +11,23 @@ const STORAGE_KEYS = {
   FIRST_TIME_USER: 'biz-grow-first-time'
 };
 
-const APP_VERSION = '1.1.0';
+// Dynamic version import from package.json with fallback for error handling
+const APP_VERSION = (() => {
+  try {
+    const version = packageJson?.version;
+    if (version) {
+      console.log(`📦 BizGrow DataStore initialized with version: ${version}`);
+      return version;
+    } else {
+      console.warn('⚠️ Could not read version from package.json, using fallback version');
+      return '1.3.3';
+    }
+  } catch (error) {
+    console.error('❌ Error reading package.json version:', error);
+    return '1.3.3';
+  }
+})();
 const DATA_VERSION = '1.0.0';
-
-
 
 // Enhanced utility functions
 const loadFromStorage = (key, defaultData) => {
@@ -187,6 +201,23 @@ class DataStore {
     if (this.isFirstTime) {
       markUserAsReturning();
     }
+  }
+
+  // Version information methods
+  getAppVersion() {
+    return APP_VERSION;
+  }
+
+  getDataVersion() {
+    return DATA_VERSION;
+  }
+
+  getVersionInfo() {
+    return {
+      app: APP_VERSION,
+      data: DATA_VERSION,
+      source: packageJson?.version ? 'package.json' : 'fallback'
+    };
   }
 
   // Customer methods
@@ -673,5 +704,11 @@ class DataStore {
 
 // Create singleton instance
 const dataStore = new DataStore();
+
+// Make dataStore globally available for testing and debugging
+if (typeof window !== 'undefined') {
+  window.dataStore = dataStore;
+  console.log('🗄️ DataStore instance available globally as window.dataStore');
+}
 
 export default dataStore;
