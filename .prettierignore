@@ -1,0 +1,40 @@
+# Build outputs
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# Documentation (has its own formatting)
+wiki/
+docs/
+
+# Generated files
+*.min.js
+*.bundle.js
+package-lock.json
+yarn.lock
+
+# Configuration files that should maintain their format
+.eslintrc.js
+vite.config.js
+tailwind.config.js
+postcss.config.js
+
+# Environment files
+.env*
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Coverage reports
+coverage/
+.nyc_output/
