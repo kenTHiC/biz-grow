@@ -16,7 +16,7 @@
 
 **A world-class business analytics dashboard with advanced data management, multi-format import/export, and enterprise-grade visualizations.**
 
-[🚀 Live Demo](https://bizgow-app.netlify.app) • [📖 Documentation](docs/) • [🎬 Video Demo](https://www.youtube.com/embed/1FjwAr5wmGg) • [💬 Discord](https://discord.gg/s27WGufPgp)
+[🚀 Live Demo](https://bizgow-app.netlify.app) • [📖 Documentation](../../wiki) • [🎬 Video Demo](https://www.youtube.com/embed/1FjwAr5wmGg) • [💬 Discord](https://discord.gg/s27WGufPgp)
 
 ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FkenTHiC%2Fbiz-grow%2Frefs%2Fheads%2Fmain%2Fpackage.json&query=%24.version&prefix=v&logo=refinedgithub&logoColor=%23ffffff&label=release&labelColor=%23545A61&color=%23BEF9C6)
 ![GitHub top language](https://img.shields.io/github/languages/top/kenthic/biz-grow?logo=javascript&color=%23BEF9C6)
