@@ -4,7 +4,7 @@
 
 ![BizGrow Logo](https://img.shields.io/badge/BizGrow-Analytics%20Dashboard-3498DB?style=for-the-badge&logo=trending-up&logoColor=white)
 
-[![Version](https://img.shields.io/badge/Version-1.1.0-2E86AB?style=for-the-badge)](https://github.com/kenthic/biz-grow/releases/tag/v1.1.0)
+[![Version](https://img.shields.io/badge/Version-1.3.3-2E86AB?style=for-the-badge)](https://github.com/kenthic/biz-grow/releases/tag/v1.3.3)
 [![Release](https://img.shields.io/github/v/release/kenthic/biz-grow?style=for-the-badge&color=5DADE2)](https://github.com/kenthic/biz-grow/releases)
 [![Tests](https://img.shields.io/badge/Tests-Passing-22c55e?style=for-the-badge&logo=check-circle)](src/utils/testSuite.js)
 [![License](https://img.shields.io/badge/License-MIT-1B4F72?style=for-the-badge)](LICENSE)
@@ -244,12 +244,14 @@ Enterprise-grade business intelligence:
 - **Performance Scoring** - Overall business health score with benchmarks
 - **Forecasting** - Revenue, expense, and customer growth projections
 
-#### 🧪 **Built-in Testing Suite**
-Comprehensive testing system:
-- **Automated Tests** - 15+ tests covering all functionality
-- **Visual Test Runner** - In-app test interface (development mode)
+#### 🧪 **Enhanced Testing Suite v1.3.3**
+Comprehensive testing system for beta stability:
+- **25+ Automated Tests** - Multi-selection, modals, ID management, data validation
+- **Performance Testing** - Memory usage, large dataset handling, Set operations
+- **Error Simulation** - Network failures, storage issues, edge cases
+- **Development Utilities** - State debugging, storage analysis, error injection
 - **Real-time Results** - Pass/fail status with detailed error messages
-- **Export Results** - Copy test results for debugging
+- **Export Results** - JSON export with environment details for bug reports
 
 ### 🗄️ Enhanced Data Management
 
@@ -394,12 +396,15 @@ module.exports = {
 
 ## 🧪 Testing & Quality Assurance
 
-### **Automated Testing Suite**
-- **15+ Comprehensive Tests** covering all functionality
-- **Export/Import Testing** for all supported formats
-- **Data Validation Testing** with error scenarios
-- **Backup/Restore Testing** for data safety
-- **Analytics Testing** for calculation accuracy
+### **Enhanced Testing Suite v1.3.3**
+- **25+ Comprehensive Tests** covering all v1.3.3 functionality
+- **Multi-Selection Testing** - Set-based logic, ID normalization, bulk operations
+- **Modal System Testing** - Professional UI components, state management
+- **ID Management Testing** - Duplicate prevention, uniqueness enforcement
+- **Data Validation Testing** - CSV import, type detection, error scenarios
+- **Performance Testing** - Large datasets, memory usage, operation speed
+- **Error Handling Testing** - Edge cases, null safety, graceful failures
+- **Development Utilities** - State debugging, error simulation, storage analysis
 
 ### **Running Tests**
 ```bash
@@ -407,9 +412,17 @@ module.exports = {
 npm run dev
 # Click "Test Suite" button in the dashboard
 
-# Console testing
+# Visual Testing Interface (Development Mode)
+# 1. Click "Test Suite" button next to "Manage Data" on Dashboard
+# 2. Use the TestRunner dialog to run tests with visual interface
+# 3. Keyboard shortcut: Ctrl+Shift+T to toggle TestRunner dialog
+
+# Console testing - Enhanced v1.3.3 commands
 # Open browser console and run:
-window.BizGrowTestSuite.quickTest()
+window.BizGrowTestSuite.runAllTests()     # Full test suite
+window.BizGrowTestSuite.quickTest()       # Essential tests only
+window.BizGrowTestSuite.debugState()      # Debug application state
+window.BizGrowTestSuite.exportResults()   # Export test results
 ```
 
 ### **Test Coverage**

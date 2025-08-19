@@ -7,6 +7,9 @@ import Analytics from './pages/Analytics';
 import Customers from './pages/Customers';
 import Reports from './pages/Reports';
 
+// Import standalone test suite to make it globally available
+import './utils/testSuiteStandalone.js';
+
 function App() {
   return (
     <ToastProvider>

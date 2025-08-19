@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Revenue, Expense, Customer } from "@/entities/all";
-import { DollarSign, TrendingDown, Users, Target, Database, AlertCircle } from "lucide-react";
+import { DollarSign, TrendingDown, Users, Target, Database, AlertCircle, Bug } from "lucide-react";
 import { format, subDays, startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 
 import KPICard from "../components/dashboard/KPICard";
@@ -12,6 +12,7 @@ import DataSummaryCards from "../components/dashboard/DataSummaryCards";
 import TrendSparklines from "../components/dashboard/TrendSparklines";
 import CategoryPieChart from "../components/dashboard/CategoryPieChart";
 import DataManager from "../components/DataManager";
+import TestRunner, { useTestRunnerKeyboard } from "../components/TestRunner";
 import dataStore from "../store/dataStore";
 
 export default function Dashboard() {
@@ -25,6 +26,7 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
   const [showDataManager, setShowDataManager] = useState(false);
+  const [showTestRunner, setShowTestRunner] = useState(false);
 
   const [isFirstTime, setIsFirstTime] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
@@ -147,6 +149,16 @@ export default function Dashboard() {
     loadData();
   };
 
+  // Toggle TestRunner dialog visibility
+  // This function is called by the "Test Suite" button and keyboard shortcut
+  const toggleTestRunner = () => {
+    console.log('🧪 Toggling Test Runner dialog...');
+    setShowTestRunner(prev => !prev);
+  };
+
+  // Add keyboard shortcut support (Ctrl+Shift+T)
+  useTestRunnerKeyboard(toggleTestRunner);
+
   const handleDismissWelcome = () => {
     setShowWelcome(false);
     dataStore.updateUserSettings({ showSampleData: false });
@@ -189,6 +201,22 @@ export default function Dashboard() {
               <Database className="w-4 h-4" />
               Manage Data
             </button>
+
+            {/* Test Suite Button - Only in Development Mode */}
+            {process.env.NODE_ENV === 'development' && (
+              <button
+                onClick={toggleTestRunner}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors font-medium ${
+                  showTestRunner
+                    ? 'bg-green-700 text-white'
+                    : 'bg-green-600 text-white hover:bg-green-700'
+                }`}
+                title={showTestRunner ? "Close Test Runner Dialog" : "Open Test Runner Dialog (Ctrl+Shift+T)"}
+              >
+                <Bug className="w-4 h-4" />
+                Test Suite
+              </button>
+            )}
 
           </div>
         </div>
@@ -326,6 +354,11 @@ export default function Dashboard() {
         onDataChange={handleDataChange}
       />
 
+      {/* Test Runner Dialog - Controlled by Test Suite button */}
+      <TestRunner
+        isVisible={showTestRunner}
+        onClose={() => setShowTestRunner(false)}
+      />
 
     </div>
   );
