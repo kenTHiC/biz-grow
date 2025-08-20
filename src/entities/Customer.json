@@ -21,11 +21,7 @@
     },
     "status": {
       "type": "string",
-      "enum": [
-        "active",
-        "inactive",
-        "potential"
-      ],
+      "enum": ["active", "inactive", "potential"],
       "default": "potential",
       "description": "Customer status"
     },
@@ -44,8 +40,5 @@
       "description": "Date of last purchase"
     }
   },
-  "required": [
-    "name",
-    "email"
-  ]
+  "required": ["name", "email"]
 }

@@ -11,13 +11,16 @@ export class CategoryManager {
       value: key,
       label: config.label,
       description: config.description,
-      color: config.color
+      color: config.color,
     }));
   }
 
   static getCategoryLabel(type, key) {
     const categories = this.getCategories(type);
-    return categories[key]?.label || key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+    return (
+      categories[key]?.label ||
+      key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())
+    );
   }
 
   static getCategoryColor(type, key) {
@@ -34,9 +37,13 @@ export class CategoryManager {
     const categories = this.getCategories(type);
     const keys = Object.keys(categories);
     if (type === 'revenue') {
-      return keys.includes('product_sales') ? 'product_sales' : keys[0] || 'other';
+      return keys.includes('product_sales')
+        ? 'product_sales'
+        : keys[0] || 'other';
     } else {
-      return keys.includes('office_supplies') ? 'office_supplies' : keys[0] || 'other';
+      return keys.includes('office_supplies')
+        ? 'office_supplies'
+        : keys[0] || 'other';
     }
   }
 
@@ -44,9 +51,11 @@ export class CategoryManager {
     // This would be used for future functionality to add custom categories
     // For now, we'll just validate the structure
     if (!config.label || !config.description || !config.color) {
-      throw new Error('Category config must include label, description, and color');
+      throw new Error(
+        'Category config must include label, description, and color'
+      );
     }
-    
+
     // In a real implementation, this would save to localStorage or send to API
     console.log(`Would add custom category: ${type}.${key}`, config);
     return true;
@@ -65,7 +74,7 @@ export class CategoryManager {
       '#ef4444': 'bg-red-100 text-red-800',
       '#f97316': 'bg-orange-100 text-orange-800',
       '#84cc16': 'bg-lime-100 text-lime-800',
-      '#06b6d4': 'bg-cyan-100 text-cyan-800'
+      '#06b6d4': 'bg-cyan-100 text-cyan-800',
     };
 
     const color = this.getCategoryColor(type, key);
@@ -92,7 +101,7 @@ export class CategoryManager {
       if (!imported.revenue || !imported.expense) {
         throw new Error('Invalid categories structure');
       }
-      
+
       // In a real implementation, this would update the config
       console.log('Would import categories:', imported);
       return true;

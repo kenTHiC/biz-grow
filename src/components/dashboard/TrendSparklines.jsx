@@ -1,56 +1,79 @@
 import React from 'react';
-import { LineChart, Line, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import {
+  LineChart,
+  Line,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+} from 'recharts';
 import { TrendingUp, TrendingDown, Minus, BarChart3 } from 'lucide-react';
-import { format, parseISO, startOfMonth, endOfMonth, eachMonthOfInterval, subMonths } from 'date-fns';
+import {
+  format,
+  parseISO,
+  startOfMonth,
+  endOfMonth,
+  eachMonthOfInterval,
+  subMonths,
+} from 'date-fns';
 
 const TrendSparklines = ({ revenues, expenses, customers }) => {
   // Generate monthly data for the last 6 months
-  const generateMonthlyData = (data, valueField = 'amount', dateField = 'date') => {
+  const generateMonthlyData = (
+    data,
+    valueField = 'amount',
+    dateField = 'date'
+  ) => {
     const now = new Date();
     const sixMonthsAgo = subMonths(now, 5);
-    
+
     const months = eachMonthOfInterval({
       start: startOfMonth(sixMonthsAgo),
-      end: endOfMonth(now)
+      end: endOfMonth(now),
     });
 
     return months.map(month => {
       const monthStart = startOfMonth(month);
       const monthEnd = endOfMonth(month);
-      
+
       const monthData = data.filter(item => {
         const itemDate = parseISO(item[dateField]);
         return itemDate >= monthStart && itemDate <= monthEnd;
       });
 
-      const value = valueField === 'count' 
-        ? monthData.length 
-        : monthData.reduce((sum, item) => sum + (item[valueField] || 0), 0);
+      const value =
+        valueField === 'count'
+          ? monthData.length
+          : monthData.reduce((sum, item) => sum + (item[valueField] || 0), 0);
 
       return {
         month: format(month, 'MMM'),
         value: value,
-        fullDate: month
+        fullDate: month,
       };
     });
   };
 
   const revenueData = generateMonthlyData(revenues);
   const expenseData = generateMonthlyData(expenses);
-  const customerData = generateMonthlyData(customers, 'count', 'acquisition_date');
+  const customerData = generateMonthlyData(
+    customers,
+    'count',
+    'acquisition_date'
+  );
 
   // Calculate trends
-  const calculateTrend = (data) => {
+  const calculateTrend = data => {
     if (data.length < 2) return { direction: 'stable', percentage: 0 };
-    
+
     const current = data[data.length - 1].value;
     const previous = data[data.length - 2].value;
-    
+
     if (previous === 0) return { direction: 'stable', percentage: 0 };
-    
+
     const percentage = ((current - previous) / previous) * 100;
-    const direction = percentage > 5 ? 'up' : percentage < -5 ? 'down' : 'stable';
-    
+    const direction =
+      percentage > 5 ? 'up' : percentage < -5 ? 'down' : 'stable';
+
     return { direction, percentage: Math.abs(percentage) };
   };
 
@@ -58,7 +81,7 @@ const TrendSparklines = ({ revenues, expenses, customers }) => {
   const expenseTrend = calculateTrend(expenseData);
   const customerTrend = calculateTrend(customerData);
 
-  const formatCurrency = (value) => {
+  const formatCurrency = value => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -71,11 +94,19 @@ const TrendSparklines = ({ revenues, expenses, customers }) => {
     const currentValue = data[data.length - 1]?.value || 0;
     const hasData = data.some(d => d.value > 0);
 
-    const TrendIcon = trend.direction === 'up' ? TrendingUp : 
-                     trend.direction === 'down' ? TrendingDown : Minus;
+    const TrendIcon =
+      trend.direction === 'up'
+        ? TrendingUp
+        : trend.direction === 'down'
+          ? TrendingDown
+          : Minus;
 
-    const trendColor = trend.direction === 'up' ? 'text-green-600' : 
-                       trend.direction === 'down' ? 'text-red-600' : 'text-gray-600';
+    const trendColor =
+      trend.direction === 'up'
+        ? 'text-green-600'
+        : trend.direction === 'down'
+          ? 'text-red-600'
+          : 'text-gray-600';
 
     const EmptySparkline = () => (
       <div className="h-16 flex items-center justify-center text-gray-400">
@@ -94,14 +125,14 @@ const TrendSparklines = ({ revenues, expenses, customers }) => {
             )}
           </div>
         </div>
-        
+
         <div className="mb-3">
           <div className="text-xl font-bold text-gray-900">
-            {type === 'currency' ? formatCurrency(currentValue) : currentValue.toLocaleString()}
+            {type === 'currency'
+              ? formatCurrency(currentValue)
+              : currentValue.toLocaleString()}
           </div>
-          <div className="text-xs text-gray-500">
-            Last 6 months
-          </div>
+          <div className="text-xs text-gray-500">Last 6 months</div>
         </div>
 
         <div className="h-16">
@@ -109,9 +140,15 @@ const TrendSparklines = ({ revenues, expenses, customers }) => {
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data}>
                 <defs>
-                  <linearGradient id={`gradient-${color}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={color} stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor={color} stopOpacity={0}/>
+                  <linearGradient
+                    id={`gradient-${color}`}
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop offset="5%" stopColor={color} stopOpacity={0.3} />
+                    <stop offset="95%" stopColor={color} stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <Area
@@ -143,13 +180,14 @@ const TrendSparklines = ({ revenues, expenses, customers }) => {
     const totalRevenue = revenueData.reduce((sum, d) => sum + d.value, 0);
     const totalExpenses = expenseData.reduce((sum, d) => sum + d.value, 0);
     const netProfit = totalRevenue - totalExpenses;
-    const profitMargin = totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0;
+    const profitMargin =
+      totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0;
 
     // Calculate profit trend data
     const profitData = revenueData.map((rev, index) => ({
       month: rev.month,
       value: rev.value - (expenseData[index]?.value || 0),
-      fullDate: rev.fullDate
+      fullDate: rev.fullDate,
     }));
 
     const profitTrend = calculateTrend(profitData);
@@ -157,20 +195,31 @@ const TrendSparklines = ({ revenues, expenses, customers }) => {
     return (
       <div className="bg-white rounded-lg border border-gray-200 p-4">
         <div className="flex items-center justify-between mb-3">
-          <h4 className="text-sm font-medium text-gray-700">Net Profit Trend</h4>
-          <div className={`flex items-center gap-1 text-xs ${
-            profitTrend.direction === 'up' ? 'text-green-600' : 
-            profitTrend.direction === 'down' ? 'text-red-600' : 'text-gray-600'
-          }`}>
-            {profitTrend.direction === 'up' ? <TrendingUp className="w-3 h-3" /> : 
-             profitTrend.direction === 'down' ? <TrendingDown className="w-3 h-3" /> : 
-             <Minus className="w-3 h-3" />}
+          <h4 className="text-sm font-medium text-gray-700">
+            Net Profit Trend
+          </h4>
+          <div
+            className={`flex items-center gap-1 text-xs ${
+              profitTrend.direction === 'up'
+                ? 'text-green-600'
+                : profitTrend.direction === 'down'
+                  ? 'text-red-600'
+                  : 'text-gray-600'
+            }`}
+          >
+            {profitTrend.direction === 'up' ? (
+              <TrendingUp className="w-3 h-3" />
+            ) : profitTrend.direction === 'down' ? (
+              <TrendingDown className="w-3 h-3" />
+            ) : (
+              <Minus className="w-3 h-3" />
+            )}
             {profitTrend.percentage > 0 && (
               <span>{profitTrend.percentage.toFixed(1)}%</span>
             )}
           </div>
         </div>
-        
+
         <div className="mb-3">
           <div className="text-xl font-bold text-gray-900">
             {formatCurrency(netProfit)}
@@ -185,15 +234,29 @@ const TrendSparklines = ({ revenues, expenses, customers }) => {
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={profitData}>
                 <defs>
-                  <linearGradient id="gradient-profit" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={netProfit >= 0 ? "#22c55e" : "#ef4444"} stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor={netProfit >= 0 ? "#22c55e" : "#ef4444"} stopOpacity={0}/>
+                  <linearGradient
+                    id="gradient-profit"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop
+                      offset="5%"
+                      stopColor={netProfit >= 0 ? '#22c55e' : '#ef4444'}
+                      stopOpacity={0.3}
+                    />
+                    <stop
+                      offset="95%"
+                      stopColor={netProfit >= 0 ? '#22c55e' : '#ef4444'}
+                      stopOpacity={0}
+                    />
                   </linearGradient>
                 </defs>
                 <Area
                   type="monotone"
                   dataKey="value"
-                  stroke={netProfit >= 0 ? "#22c55e" : "#ef4444"}
+                  stroke={netProfit >= 0 ? '#22c55e' : '#ef4444'}
                   strokeWidth={2}
                   fill="url(#gradient-profit)"
                   dot={false}
@@ -226,7 +289,7 @@ const TrendSparklines = ({ revenues, expenses, customers }) => {
         color="#22c55e"
         type="currency"
       />
-      
+
       <TrendCard
         title="Expense Trend"
         data={expenseData}
@@ -234,7 +297,7 @@ const TrendSparklines = ({ revenues, expenses, customers }) => {
         color="#ef4444"
         type="currency"
       />
-      
+
       <TrendCard
         title="Customer Growth"
         data={customerData}

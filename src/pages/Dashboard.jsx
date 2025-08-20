@@ -1,19 +1,33 @@
-import React, { useState, useEffect } from "react";
-import { Revenue, Expense, Customer } from "@/entities/all";
-import { DollarSign, TrendingDown, Users, Target, Database, AlertCircle, Bug } from "lucide-react";
-import { format, subDays, startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
+import React, { useState, useEffect } from 'react';
+import { Revenue, Expense, Customer } from '@/entities/all';
+import {
+  DollarSign,
+  TrendingDown,
+  Users,
+  Target,
+  Database,
+  AlertCircle,
+  Bug,
+} from 'lucide-react';
+import {
+  format,
+  subDays,
+  startOfMonth,
+  endOfMonth,
+  isWithinInterval,
+} from 'date-fns';
 
-import KPICard from "../components/dashboard/KPICard";
-import RevenueChart from "../components/dashboard/RevenueChart";
-import ExpenseChart from "../components/dashboard/ExpenseChart";
-import CustomerGrowthChart from "../components/dashboard/CustomerGrowthChart";
-import DateRangeFilter from "../components/dashboard/DateRangeFilter";
-import DataSummaryCards from "../components/dashboard/DataSummaryCards";
-import TrendSparklines from "../components/dashboard/TrendSparklines";
-import CategoryPieChart from "../components/dashboard/CategoryPieChart";
-import DataManager from "../components/DataManager";
-import TestRunner, { useTestRunnerKeyboard } from "../components/TestRunner";
-import dataStore from "../store/dataStore";
+import KPICard from '../components/dashboard/KPICard';
+import RevenueChart from '../components/dashboard/RevenueChart';
+import ExpenseChart from '../components/dashboard/ExpenseChart';
+import CustomerGrowthChart from '../components/dashboard/CustomerGrowthChart';
+import DateRangeFilter from '../components/dashboard/DateRangeFilter';
+import DataSummaryCards from '../components/dashboard/DataSummaryCards';
+import TrendSparklines from '../components/dashboard/TrendSparklines';
+import CategoryPieChart from '../components/dashboard/CategoryPieChart';
+import DataManager from '../components/DataManager';
+import TestRunner, { useTestRunnerKeyboard } from '../components/TestRunner';
+import dataStore from '../store/dataStore';
 
 export default function Dashboard() {
   const [revenues, setRevenues] = useState([]);
@@ -21,7 +35,7 @@ export default function Dashboard() {
   const [customers, setCustomers] = useState([]);
   const [dateRange, setDateRange] = useState({
     from: subDays(new Date(), 30),
-    to: new Date()
+    to: new Date(),
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
@@ -48,7 +62,10 @@ export default function Dashboard() {
     try {
       // Check if this is a first-time user
       const userSettings = dataStore.getUserSettings();
-      const hasData = dataStore.customers.length > 0 || dataStore.revenues.length > 0 || dataStore.expenses.length > 0;
+      const hasData =
+        dataStore.customers.length > 0 ||
+        dataStore.revenues.length > 0 ||
+        dataStore.expenses.length > 0;
 
       setIsFirstTime(!hasData && userSettings.showSampleData !== false);
       setShowWelcome(!hasData && userSettings.showSampleData !== false);
@@ -56,7 +73,7 @@ export default function Dashboard() {
       const [revenueData, expenseData, customerData] = await Promise.all([
         Revenue.list('-date'),
         Expense.list('-date'),
-        Customer.list('-acquisition_date')
+        Customer.list('-acquisition_date'),
       ]);
 
       setRevenues(revenueData);
@@ -70,21 +87,35 @@ export default function Dashboard() {
 
   const filterDataByDateRange = (data, dateField = 'date') => {
     if (!dateRange?.from || !dateRange?.to) return data;
-    
+
     return data.filter(item => {
       const itemDate = new Date(item[dateField]);
-      return isWithinInterval(itemDate, { start: dateRange.from, end: dateRange.to });
+      return isWithinInterval(itemDate, {
+        start: dateRange.from,
+        end: dateRange.to,
+      });
     });
   };
 
   const filteredRevenues = filterDataByDateRange(revenues);
   const filteredExpenses = filterDataByDateRange(expenses);
-  const filteredCustomers = filterDataByDateRange(customers, 'acquisition_date');
+  const filteredCustomers = filterDataByDateRange(
+    customers,
+    'acquisition_date'
+  );
 
-  const totalRevenue = filteredRevenues.reduce((sum, item) => sum + (item.amount || 0), 0);
-  const totalExpenses = filteredExpenses.reduce((sum, item) => sum + (item.amount || 0), 0);
+  const totalRevenue = filteredRevenues.reduce(
+    (sum, item) => sum + (item.amount || 0),
+    0
+  );
+  const totalExpenses = filteredExpenses.reduce(
+    (sum, item) => sum + (item.amount || 0),
+    0
+  );
   const netProfit = totalRevenue - totalExpenses;
-  const activeCustomers = filteredCustomers.filter(c => c.status === 'active').length;
+  const activeCustomers = filteredCustomers.filter(
+    c => c.status === 'active'
+  ).length;
 
   // Prepare chart data
   const revenueChartData = prepareRevenueChartData(filteredRevenues);
@@ -102,22 +133,22 @@ export default function Dashboard() {
           activeCustomers,
           dateRange: {
             from: format(dateRange.from, 'yyyy-MM-dd'),
-            to: format(dateRange.to, 'yyyy-MM-dd')
-          }
+            to: format(dateRange.to, 'yyyy-MM-dd'),
+          },
         },
         revenues: filteredRevenues.map(r => ({
           date: r.date,
           amount: r.amount,
           source: r.source,
           category: r.category,
-          customer: r.customer_name
+          customer: r.customer_name,
         })),
         expenses: filteredExpenses.map(e => ({
           date: e.date,
           amount: e.amount,
           category: e.category,
           vendor: e.vendor,
-          description: e.description
+          description: e.description,
         })),
         customers: filteredCustomers.map(c => ({
           name: c.name,
@@ -125,8 +156,8 @@ export default function Dashboard() {
           company: c.company,
           status: c.status,
           acquisitionDate: c.acquisition_date,
-          totalValue: c.total_value
-        }))
+          totalValue: c.total_value,
+        })),
       };
 
       const dataStr = JSON.stringify(exportData, null, 2);
@@ -171,9 +202,11 @@ export default function Dashboard() {
           <div className="animate-pulse space-y-8">
             <div className="h-8 bg-slate-200 rounded w-64"></div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {Array(4).fill(0).map((_, i) => (
-                <div key={i} className="h-32 bg-slate-200 rounded-2xl"></div>
-              ))}
+              {Array(4)
+                .fill(0)
+                .map((_, i) => (
+                  <div key={i} className="h-32 bg-slate-200 rounded-2xl"></div>
+                ))}
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div className="h-96 bg-slate-200 rounded-2xl"></div>
@@ -190,8 +223,12 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-4xl font-bold text-slate-900 mb-2">Business Dashboard</h1>
-            <p className="text-slate-600 text-lg">Track your business performance and growth</p>
+            <h1 className="text-4xl font-bold text-slate-900 mb-2">
+              Business Dashboard
+            </h1>
+            <p className="text-slate-600 text-lg">
+              Track your business performance and growth
+            </p>
           </div>
           <div className="flex gap-3">
             <button
@@ -211,18 +248,24 @@ export default function Dashboard() {
                     ? 'bg-green-700 text-white'
                     : 'bg-green-600 text-white hover:bg-green-700'
                 }`}
-                title={showTestRunner ? "Close Test Runner Dialog" : "Open Test Runner Dialog (Ctrl+Shift+T)"}
+                title={
+                  showTestRunner
+                    ? 'Close Test Runner Dialog'
+                    : 'Open Test Runner Dialog (Ctrl+Shift+T)'
+                }
               >
                 <Bug className="w-4 h-4" />
                 Test Suite
               </button>
             )}
-
           </div>
         </div>
 
         {/* Welcome Banner for First-Time Users */}
-        {(isFirstTime || (revenues.length === 0 && expenses.length === 0 && customers.length === 0)) && (
+        {(isFirstTime ||
+          (revenues.length === 0 &&
+            expenses.length === 0 &&
+            customers.length === 0)) && (
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-4">
@@ -234,8 +277,9 @@ export default function Dashboard() {
                     Welcome to BizGrow! 🎉
                   </h3>
                   <p className="text-blue-800 mb-4">
-                    Get started by importing your business data. BizGrow supports JSON, CSV, and Excel files
-                    to help you track revenue, expenses, and customers.
+                    Get started by importing your business data. BizGrow
+                    supports JSON, CSV, and Excel files to help you track
+                    revenue, expenses, and customers.
                   </p>
                   <div className="flex gap-3">
                     <button
@@ -300,10 +344,10 @@ export default function Dashboard() {
           <KPICard
             title="Net Profit"
             value={`$${netProfit.toLocaleString()}`}
-            change={netProfit > 0 ? "+18.3%" : "-8.1%"}
-            changeType={netProfit > 0 ? "positive" : "negative"}
+            change={netProfit > 0 ? '+18.3%' : '-8.1%'}
+            changeType={netProfit > 0 ? 'positive' : 'negative'}
             icon={Target}
-            color={netProfit > 0 ? "bg-emerald-500" : "bg-red-500"}
+            color={netProfit > 0 ? 'bg-emerald-500' : 'bg-red-500'}
             delay={0.2}
           />
           <KPICard
@@ -359,7 +403,6 @@ export default function Dashboard() {
         isVisible={showTestRunner}
         onClose={() => setShowTestRunner(false)}
       />
-
     </div>
   );
 }
@@ -376,7 +419,7 @@ function prepareRevenueChartData(revenues) {
     .map(([period, revenue]) => ({
       period,
       revenue,
-      amount: revenue // Add amount alias for consistency
+      amount: revenue, // Add amount alias for consistency
     }))
     .sort((a, b) => {
       // Fix date sorting for "MMM yyyy" format
@@ -389,10 +432,11 @@ function prepareRevenueChartData(revenues) {
 
 function prepareExpenseChartData(expenses) {
   const categoryData = {};
-  
+
   expenses.forEach(expense => {
     const category = expense.category?.replace(/_/g, ' ') || 'other';
-    categoryData[category] = (categoryData[category] || 0) + (expense.amount || 0);
+    categoryData[category] =
+      (categoryData[category] || 0) + (expense.amount || 0);
   });
 
   return Object.entries(categoryData)
@@ -405,7 +449,10 @@ function prepareCustomerChartData(customers) {
   const monthlyData = {};
 
   customers.forEach(customer => {
-    const month = format(new Date(customer.acquisition_date || customer.created_date), 'MMM yyyy');
+    const month = format(
+      new Date(customer.acquisition_date || customer.created_date),
+      'MMM yyyy'
+    );
     monthlyData[month] = (monthlyData[month] || 0) + 1;
   });
 

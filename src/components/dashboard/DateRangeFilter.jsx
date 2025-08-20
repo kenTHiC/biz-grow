@@ -1,21 +1,41 @@
 import React from 'react';
 import { format, subDays, startOfMonth, endOfMonth } from 'date-fns';
-import { CalendarDays, Download } from "lucide-react";
+import { CalendarDays, Download } from 'lucide-react';
 
 export default function DateRangeFilter({
   dateRange,
   onDateRangeChange,
   onExport,
-  isExporting = false
+  isExporting = false,
 }) {
   const presetRanges = [
-    { label: "Last 7 days", value: "7d", start: subDays(new Date(), 7), end: new Date() },
-    { label: "Last 30 days", value: "30d", start: subDays(new Date(), 30), end: new Date() },
-    { label: "This month", value: "month", start: startOfMonth(new Date()), end: endOfMonth(new Date()) },
-    { label: "Last 3 months", value: "3m", start: subDays(new Date(), 90), end: new Date() },
+    {
+      label: 'Last 7 days',
+      value: '7d',
+      start: subDays(new Date(), 7),
+      end: new Date(),
+    },
+    {
+      label: 'Last 30 days',
+      value: '30d',
+      start: subDays(new Date(), 30),
+      end: new Date(),
+    },
+    {
+      label: 'This month',
+      value: 'month',
+      start: startOfMonth(new Date()),
+      end: endOfMonth(new Date()),
+    },
+    {
+      label: 'Last 3 months',
+      value: '3m',
+      start: subDays(new Date(), 90),
+      end: new Date(),
+    },
   ];
 
-  const handlePresetChange = (e) => {
+  const handlePresetChange = e => {
     const preset = e.target.value;
     const range = presetRanges.find(r => r.value === preset);
     if (range) {
@@ -23,19 +43,19 @@ export default function DateRangeFilter({
     }
   };
 
-  const handleFromDateChange = (e) => {
+  const handleFromDateChange = e => {
     const newDate = new Date(e.target.value);
     onDateRangeChange({
       ...dateRange,
-      from: newDate
+      from: newDate,
     });
   };
 
-  const handleToDateChange = (e) => {
+  const handleToDateChange = e => {
     const newDate = new Date(e.target.value);
     onDateRangeChange({
       ...dateRange,
-      to: newDate
+      to: newDate,
     });
   };
 
@@ -45,7 +65,9 @@ export default function DateRangeFilter({
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
           <div className="flex items-center gap-2">
             <CalendarDays className="w-5 h-5 text-slate-500" />
-            <h3 className="text-lg font-semibold text-slate-900">Time Period</h3>
+            <h3 className="text-lg font-semibold text-slate-900">
+              Time Period
+            </h3>
           </div>
 
           <select
@@ -53,7 +75,7 @@ export default function DateRangeFilter({
             className="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
           >
             <option value="">Select preset range</option>
-            {presetRanges.map((range) => (
+            {presetRanges.map(range => (
               <option key={range.value} value={range.value}>
                 {range.label}
               </option>
@@ -62,16 +84,22 @@ export default function DateRangeFilter({
 
           <div className="flex gap-3 items-center">
             <div className="flex flex-col">
-              <label className="text-xs font-medium text-slate-600 mb-1">From</label>
+              <label className="text-xs font-medium text-slate-600 mb-1">
+                From
+              </label>
               <input
                 type="date"
-                value={dateRange?.from ? format(dateRange.from, 'yyyy-MM-dd') : ''}
+                value={
+                  dateRange?.from ? format(dateRange.from, 'yyyy-MM-dd') : ''
+                }
                 onChange={handleFromDateChange}
                 className="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
             <div className="flex flex-col">
-              <label className="text-xs font-medium text-slate-600 mb-1">To</label>
+              <label className="text-xs font-medium text-slate-600 mb-1">
+                To
+              </label>
               <input
                 type="date"
                 value={dateRange?.to ? format(dateRange.to, 'yyyy-MM-dd') : ''}

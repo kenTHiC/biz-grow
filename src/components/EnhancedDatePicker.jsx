@@ -1,15 +1,29 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Calendar, Clock, ChevronDown, X } from 'lucide-react';
-import { format, parse, isValid, startOfDay, endOfDay, addDays, subDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear } from 'date-fns';
+import {
+  format,
+  parse,
+  isValid,
+  startOfDay,
+  endOfDay,
+  addDays,
+  subDays,
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+  startOfYear,
+  endOfYear,
+} from 'date-fns';
 
-const EnhancedDatePicker = ({ 
-  value, 
-  onChange, 
-  placeholder = "Select date",
+const EnhancedDatePicker = ({
+  value,
+  onChange,
+  placeholder = 'Select date',
   includeTime = false,
   allowRange = false,
   presets = true,
-  className = ""
+  className = '',
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -18,21 +32,67 @@ const EnhancedDatePicker = ({
   const inputRef = useRef(null);
 
   const datePresets = [
-    { label: 'Today', getValue: () => ({ from: startOfDay(new Date()), to: endOfDay(new Date()) }) },
-    { label: 'Yesterday', getValue: () => ({ from: startOfDay(subDays(new Date(), 1)), to: endOfDay(subDays(new Date(), 1)) }) },
-    { label: 'Last 7 days', getValue: () => ({ from: startOfDay(subDays(new Date(), 6)), to: endOfDay(new Date()) }) },
-    { label: 'Last 30 days', getValue: () => ({ from: startOfDay(subDays(new Date(), 29)), to: endOfDay(new Date()) }) },
-    { label: 'This week', getValue: () => ({ from: startOfWeek(new Date()), to: endOfWeek(new Date()) }) },
-    { label: 'This month', getValue: () => ({ from: startOfMonth(new Date()), to: endOfMonth(new Date()) }) },
-    { label: 'This year', getValue: () => ({ from: startOfYear(new Date()), to: endOfYear(new Date()) }) },
+    {
+      label: 'Today',
+      getValue: () => ({
+        from: startOfDay(new Date()),
+        to: endOfDay(new Date()),
+      }),
+    },
+    {
+      label: 'Yesterday',
+      getValue: () => ({
+        from: startOfDay(subDays(new Date(), 1)),
+        to: endOfDay(subDays(new Date(), 1)),
+      }),
+    },
+    {
+      label: 'Last 7 days',
+      getValue: () => ({
+        from: startOfDay(subDays(new Date(), 6)),
+        to: endOfDay(new Date()),
+      }),
+    },
+    {
+      label: 'Last 30 days',
+      getValue: () => ({
+        from: startOfDay(subDays(new Date(), 29)),
+        to: endOfDay(new Date()),
+      }),
+    },
+    {
+      label: 'This week',
+      getValue: () => ({
+        from: startOfWeek(new Date()),
+        to: endOfWeek(new Date()),
+      }),
+    },
+    {
+      label: 'This month',
+      getValue: () => ({
+        from: startOfMonth(new Date()),
+        to: endOfMonth(new Date()),
+      }),
+    },
+    {
+      label: 'This year',
+      getValue: () => ({
+        from: startOfYear(new Date()),
+        to: endOfYear(new Date()),
+      }),
+    },
   ];
 
   useEffect(() => {
     if (value) {
       if (allowRange && value.from && value.to) {
-        setInputValue(`${format(value.from, 'MMM dd, yyyy')} - ${format(value.to, 'MMM dd, yyyy')}`);
+        setInputValue(
+          `${format(value.from, 'MMM dd, yyyy')} - ${format(value.to, 'MMM dd, yyyy')}`
+        );
       } else if (!allowRange && value) {
-        setInputValue(format(value, includeTime ? 'MMM dd, yyyy HH:mm' : 'MMM dd, yyyy'));
+        setInputValue(
+          format(value, includeTime ? 'MMM dd, yyyy HH:mm' : 'MMM dd, yyyy')
+        );
       }
     } else {
       setInputValue('');
@@ -40,7 +100,7 @@ const EnhancedDatePicker = ({
   }, [value, allowRange, includeTime]);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = event => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
       }
@@ -50,7 +110,7 @@ const EnhancedDatePicker = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const newValue = e.target.value;
     setInputValue(newValue);
 
@@ -81,7 +141,7 @@ const EnhancedDatePicker = ({
     }
   };
 
-  const handlePresetClick = (preset) => {
+  const handlePresetClick = preset => {
     const range = preset.getValue();
     if (allowRange) {
       onChange(range);
@@ -98,27 +158,27 @@ const EnhancedDatePicker = ({
     setSelectedRange(null);
   };
 
-  const generateCalendarDays = (date) => {
+  const generateCalendarDays = date => {
     const start = startOfMonth(date);
     const end = endOfMonth(date);
     const startWeek = startOfWeek(start);
     const endWeek = endOfWeek(end);
-    
+
     const days = [];
     let current = startWeek;
-    
+
     while (current <= endWeek) {
       days.push(new Date(current));
       current = addDays(current, 1);
     }
-    
+
     return days;
   };
 
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const calendarDays = generateCalendarDays(currentMonth);
 
-  const handleDateClick = (date) => {
+  const handleDateClick = date => {
     if (allowRange) {
       if (!selectedRange || (selectedRange.from && selectedRange.to)) {
         // Start new range
@@ -138,16 +198,18 @@ const EnhancedDatePicker = ({
     }
   };
 
-  const isDateInRange = (date) => {
+  const isDateInRange = date => {
     if (!allowRange || !value?.from || !value?.to) return false;
     return date >= value.from && date <= value.to;
   };
 
-  const isDateSelected = (date) => {
+  const isDateSelected = date => {
     if (allowRange) {
       return isDateInRange(date);
     } else {
-      return value && format(date, 'yyyy-MM-dd') === format(value, 'yyyy-MM-dd');
+      return (
+        value && format(date, 'yyyy-MM-dd') === format(value, 'yyyy-MM-dd')
+      );
     }
   };
 
@@ -185,9 +247,11 @@ const EnhancedDatePicker = ({
         <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[300px]">
           {presets && (
             <div className="p-3 border-b border-gray-200">
-              <div className="text-sm font-medium text-gray-700 mb-2">Quick Select</div>
+              <div className="text-sm font-medium text-gray-700 mb-2">
+                Quick Select
+              </div>
               <div className="grid grid-cols-2 gap-1">
-                {datePresets.map((preset) => (
+                {datePresets.map(preset => (
                   <button
                     key={preset.label}
                     onClick={() => handlePresetClick(preset)}
@@ -222,8 +286,11 @@ const EnhancedDatePicker = ({
 
             {/* Calendar Grid */}
             <div className="grid grid-cols-7 gap-1 mb-2">
-              {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
-                <div key={day} className="text-center text-xs font-medium text-gray-500 py-1">
+              {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(day => (
+                <div
+                  key={day}
+                  className="text-center text-xs font-medium text-gray-500 py-1"
+                >
                   {day}
                 </div>
               ))}
@@ -231,8 +298,11 @@ const EnhancedDatePicker = ({
 
             <div className="grid grid-cols-7 gap-1">
               {calendarDays.map((date, index) => {
-                const isCurrentMonth = date.getMonth() === currentMonth.getMonth();
-                const isToday = format(date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
+                const isCurrentMonth =
+                  date.getMonth() === currentMonth.getMonth();
+                const isToday =
+                  format(date, 'yyyy-MM-dd') ===
+                  format(new Date(), 'yyyy-MM-dd');
                 const isSelected = isDateSelected(date);
 
                 return (
@@ -259,7 +329,7 @@ const EnhancedDatePicker = ({
                   <input
                     type="time"
                     value={value ? format(value, 'HH:mm') : ''}
-                    onChange={(e) => {
+                    onChange={e => {
                       if (value && e.target.value) {
                         const [hours, minutes] = e.target.value.split(':');
                         const newDate = new Date(value);

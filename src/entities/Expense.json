@@ -41,9 +41,5 @@
       "description": "URL to receipt or invoice"
     }
   },
-  "required": [
-    "amount",
-    "date",
-    "category"
-  ]
+  "required": ["amount", "date", "category"]
 }

@@ -2,16 +2,16 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, Trash2, X } from 'lucide-react';
 
-export function ConfirmationModal({ 
-  isOpen, 
-  onClose, 
-  onConfirm, 
-  title = "Confirm Action",
-  message = "Are you sure you want to proceed?",
-  confirmText = "Confirm",
-  cancelText = "Cancel",
-  variant = "default", // "default", "danger", "warning"
-  icon = null
+export function ConfirmationModal({
+  isOpen,
+  onClose,
+  onConfirm,
+  title = 'Confirm Action',
+  message = 'Are you sure you want to proceed?',
+  confirmText = 'Confirm',
+  cancelText = 'Cancel',
+  variant = 'default', // "default", "danger", "warning"
+  icon = null,
 }) {
   if (!isOpen) return null;
 
@@ -21,26 +21,27 @@ export function ConfirmationModal({
         return {
           iconColor: 'text-red-600',
           confirmButton: 'bg-red-600 hover:bg-red-700 focus:ring-red-500',
-          icon: icon || <Trash2 className="w-6 h-6" />
+          icon: icon || <Trash2 className="w-6 h-6" />,
         };
       case 'warning':
         return {
           iconColor: 'text-yellow-600',
-          confirmButton: 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500',
-          icon: icon || <AlertTriangle className="w-6 h-6" />
+          confirmButton:
+            'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500',
+          icon: icon || <AlertTriangle className="w-6 h-6" />,
         };
       default:
         return {
           iconColor: 'text-blue-600',
           confirmButton: 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500',
-          icon: icon || <AlertTriangle className="w-6 h-6" />
+          icon: icon || <AlertTriangle className="w-6 h-6" />,
         };
     }
   };
 
   const styles = getVariantStyles();
 
-  const handleBackdropClick = (e) => {
+  const handleBackdropClick = e => {
     if (e.target === e.currentTarget) {
       onClose();
     }
@@ -66,7 +67,7 @@ export function ConfirmationModal({
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ duration: 0.2 }}
           className="relative w-full max-w-md bg-white rounded-xl shadow-2xl border border-slate-200"
-          onClick={(e) => e.stopPropagation()}
+          onClick={e => e.stopPropagation()}
         >
           {/* Close Button */}
           <button
@@ -83,16 +84,12 @@ export function ConfirmationModal({
               <div className={`flex-shrink-0 ${styles.iconColor}`}>
                 {styles.icon}
               </div>
-              <h3 className="text-lg font-semibold text-slate-900">
-                {title}
-              </h3>
+              <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
             </div>
 
             {/* Message */}
             <div className="mb-6">
-              <p className="text-slate-600 leading-relaxed">
-                {message}
-              </p>
+              <p className="text-slate-600 leading-relaxed">{message}</p>
             </div>
 
             {/* Actions */}

@@ -1,9 +1,16 @@
 import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  Legend,
+} from 'recharts';
 import { BarChart3 } from 'lucide-react';
 import CategoryManager from '../../utils/categories';
 
-const CategoryPieChart = ({ data, title, type = "expense" }) => {
+const CategoryPieChart = ({ data, title, type = 'expense' }) => {
   // Process data to group by category
   const processData = () => {
     if (!data || data.length === 0) return [];
@@ -11,7 +18,8 @@ const CategoryPieChart = ({ data, title, type = "expense" }) => {
     const categoryTotals = {};
     data.forEach(item => {
       const category = item.category || 'Other';
-      categoryTotals[category] = (categoryTotals[category] || 0) + (item.amount || 0);
+      categoryTotals[category] =
+        (categoryTotals[category] || 0) + (item.amount || 0);
     });
 
     return Object.entries(categoryTotals)
@@ -19,14 +27,14 @@ const CategoryPieChart = ({ data, title, type = "expense" }) => {
         name: CategoryManager.getCategoryLabel(type, category),
         value: amount,
         percentage: 0, // Will be calculated after sorting
-        category: category // Keep original category key for color mapping
+        category: category, // Keep original category key for color mapping
       }))
       .sort((a, b) => b.value - a.value)
       .map((item, index, array) => {
         const total = array.reduce((sum, i) => sum + i.value, 0);
         return {
           ...item,
-          percentage: total > 0 ? ((item.value / total) * 100).toFixed(1) : 0
+          percentage: total > 0 ? ((item.value / total) * 100).toFixed(1) : 0,
         };
       });
   };
@@ -40,13 +48,46 @@ const CategoryPieChart = ({ data, title, type = "expense" }) => {
       return CategoryManager.getCategoryColor(type, item.category);
     }
     // Fallback colors if category not found
-    const fallbackColors = type === 'expense'
-      ? ['#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#d946ef']
-      : ['#22c55e', '#16a34a', '#15803d', '#166534', '#14532d', '#10b981', '#059669', '#047857', '#065f46', '#064e3b', '#06b6d4', '#0891b2', '#0e7490', '#155e75', '#164e63'];
+    const fallbackColors =
+      type === 'expense'
+        ? [
+            '#ef4444',
+            '#f97316',
+            '#f59e0b',
+            '#eab308',
+            '#84cc16',
+            '#22c55e',
+            '#10b981',
+            '#14b8a6',
+            '#06b6d4',
+            '#0ea5e9',
+            '#3b82f6',
+            '#6366f1',
+            '#8b5cf6',
+            '#a855f7',
+            '#d946ef',
+          ]
+        : [
+            '#22c55e',
+            '#16a34a',
+            '#15803d',
+            '#166534',
+            '#14532d',
+            '#10b981',
+            '#059669',
+            '#047857',
+            '#065f46',
+            '#064e3b',
+            '#06b6d4',
+            '#0891b2',
+            '#0e7490',
+            '#155e75',
+            '#164e63',
+          ];
     return fallbackColors[index % fallbackColors.length];
   };
 
-  const formatCurrency = (value) => {
+  const formatCurrency = value => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -75,8 +116,8 @@ const CategoryPieChart = ({ data, title, type = "expense" }) => {
       <div className="flex flex-wrap gap-2 justify-center mt-4">
         {payload.map((entry, index) => (
           <div key={index} className="flex items-center gap-2 text-sm">
-            <div 
-              className="w-3 h-3 rounded-full" 
+            <div
+              className="w-3 h-3 rounded-full"
               style={{ backgroundColor: entry.color }}
             />
             <span className="text-gray-700">{entry.value}</span>
@@ -89,12 +130,13 @@ const CategoryPieChart = ({ data, title, type = "expense" }) => {
   const EmptyState = () => (
     <div className="flex flex-col items-center justify-center h-64 text-gray-500">
       <BarChart3 className="w-12 h-12 mb-4 text-gray-400" />
-      <h3 className="text-lg font-medium text-gray-900 mb-2">No Data Available</h3>
+      <h3 className="text-lg font-medium text-gray-900 mb-2">
+        No Data Available
+      </h3>
       <p className="text-center text-gray-600">
-        {type === 'expense' 
+        {type === 'expense'
           ? 'Add expense data to see category breakdown'
-          : 'Add revenue data to see source breakdown'
-        }
+          : 'Add revenue data to see source breakdown'}
       </p>
     </div>
   );
@@ -130,10 +172,7 @@ const CategoryPieChart = ({ data, title, type = "expense" }) => {
               dataKey="value"
             >
               {chartData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={getItemColor(entry, index)}
-                />
+                <Cell key={`cell-${index}`} fill={getItemColor(entry, index)} />
               ))}
             </Pie>
             <Tooltip content={<CustomTooltip />} />
@@ -147,7 +186,10 @@ const CategoryPieChart = ({ data, title, type = "expense" }) => {
         <h4 className="text-sm font-medium text-gray-900 mb-3">Breakdown</h4>
         <div className="space-y-2">
           {chartData.slice(0, 5).map((item, index) => (
-            <div key={index} className="flex items-center justify-between text-sm">
+            <div
+              key={index}
+              className="flex items-center justify-between text-sm"
+            >
               <div className="flex items-center gap-2">
                 <div
                   className="w-3 h-3 rounded-full"
@@ -159,9 +201,7 @@ const CategoryPieChart = ({ data, title, type = "expense" }) => {
                 <span className="text-gray-900 font-medium">
                   {formatCurrency(item.value)}
                 </span>
-                <span className="text-gray-500">
-                  ({item.percentage}%)
-                </span>
+                <span className="text-gray-500">({item.percentage}%)</span>
               </div>
             </div>
           ))}

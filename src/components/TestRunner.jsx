@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Play, CheckCircle, XCircle, Download, Bug, Zap, Settings, X } from 'lucide-react';
+import {
+  Play,
+  CheckCircle,
+  XCircle,
+  Download,
+  Bug,
+  Zap,
+  Settings,
+  X,
+} from 'lucide-react';
 
 /**
  * TestRunner Component for BizGrow v1.3.3
@@ -27,7 +36,9 @@ export default function TestRunner({ isVisible = false, onClose = null }) {
 
     // Check if test suite is available
     if (typeof window.BizGrowTestSuite === 'undefined') {
-      setTestResults({ error: 'Test Suite not loaded. Please refresh the page.' });
+      setTestResults({
+        error: 'Test Suite not loaded. Please refresh the page.',
+      });
       setIsRunning(false);
       return;
     }
@@ -81,11 +92,13 @@ export default function TestRunner({ isVisible = false, onClose = null }) {
     }
   };
 
-  const simulateError = (type) => {
+  const simulateError = type => {
     console.log(`Simulating ${type} error...`);
     // Simple error simulation without requiring test suite
     if (type === 'network') {
-      console.warn('Network error simulation: This would normally disable network requests for 5 seconds');
+      console.warn(
+        'Network error simulation: This would normally disable network requests for 5 seconds'
+      );
     }
   };
 
@@ -112,7 +125,7 @@ export default function TestRunner({ isVisible = false, onClose = null }) {
         <div className="mb-3">
           <select
             value={selectedTest}
-            onChange={(e) => setSelectedTest(e.target.value)}
+            onChange={e => setSelectedTest(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
           >
             <option value="all">All Tests (25+)</option>
@@ -161,7 +174,7 @@ export default function TestRunner({ isVisible = false, onClose = null }) {
             <Download className="w-3 h-3" />
             Export
           </button>
-          
+
           <button
             onClick={() => simulateError('network')}
             className="flex-1 flex items-center justify-center gap-1 px-2 py-1 bg-orange-600 text-white rounded text-xs hover:bg-orange-700"
@@ -191,7 +204,7 @@ export default function TestRunner({ isVisible = false, onClose = null }) {
                     )}
                   </div>
                 </div>
-                
+
                 {typeof testResults.passed === 'number' && (
                   <div className="text-sm text-gray-600">
                     <div>Passed: {testResults.passed}</div>
@@ -201,7 +214,7 @@ export default function TestRunner({ isVisible = false, onClose = null }) {
                     )}
                   </div>
                 )}
-                
+
                 <div className="text-xs text-gray-500">
                   Check console for detailed results
                 </div>
@@ -230,7 +243,7 @@ export function useTestRunnerKeyboard(onToggle) {
     // Add keyboard shortcut (Ctrl+Shift+T) - only if onToggle is provided
     if (!onToggle) return;
 
-    const handleKeyDown = (event) => {
+    const handleKeyDown = event => {
       if (event.ctrlKey && event.shiftKey && event.key === 'T') {
         event.preventDefault();
         onToggle();

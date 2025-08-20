@@ -1,104 +1,70 @@
-import React from "react";
-import { cn } from "@/utils";
+import React from 'react';
+import { cn } from '@/utils';
 
 const SidebarProvider = ({ children, ...props }) => (
   <div {...props}>{children}</div>
 );
 
 const Sidebar = React.forwardRef(({ className, ...props }, ref) => (
-  <aside
-    ref={ref}
-    className={cn("w-64 h-screen", className)}
-    {...props}
-  />
+  <aside ref={ref} className={cn('w-64 h-screen', className)} {...props} />
 ));
-Sidebar.displayName = "Sidebar";
+Sidebar.displayName = 'Sidebar';
 
 const SidebarHeader = React.forwardRef(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("", className)}
-    {...props}
-  />
+  <div ref={ref} className={cn('', className)} {...props} />
 ));
-SidebarHeader.displayName = "SidebarHeader";
+SidebarHeader.displayName = 'SidebarHeader';
 
 const SidebarContent = React.forwardRef(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("flex-1", className)}
-    {...props}
-  />
+  <div ref={ref} className={cn('flex-1', className)} {...props} />
 ));
-SidebarContent.displayName = "SidebarContent";
+SidebarContent.displayName = 'SidebarContent';
 
 const SidebarGroup = React.forwardRef(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("", className)}
-    {...props}
-  />
+  <div ref={ref} className={cn('', className)} {...props} />
 ));
-SidebarGroup.displayName = "SidebarGroup";
+SidebarGroup.displayName = 'SidebarGroup';
 
 const SidebarGroupLabel = React.forwardRef(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("", className)}
-    {...props}
-  />
+  <div ref={ref} className={cn('', className)} {...props} />
 ));
-SidebarGroupLabel.displayName = "SidebarGroupLabel";
+SidebarGroupLabel.displayName = 'SidebarGroupLabel';
 
 const SidebarGroupContent = React.forwardRef(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("", className)}
-    {...props}
-  />
+  <div ref={ref} className={cn('', className)} {...props} />
 ));
-SidebarGroupContent.displayName = "SidebarGroupContent";
+SidebarGroupContent.displayName = 'SidebarGroupContent';
 
 const SidebarMenu = React.forwardRef(({ className, ...props }, ref) => (
-  <ul
-    ref={ref}
-    className={cn("", className)}
-    {...props}
-  />
+  <ul ref={ref} className={cn('', className)} {...props} />
 ));
-SidebarMenu.displayName = "SidebarMenu";
+SidebarMenu.displayName = 'SidebarMenu';
 
 const SidebarMenuItem = React.forwardRef(({ className, ...props }, ref) => (
-  <li
-    ref={ref}
-    className={cn("", className)}
-    {...props}
-  />
+  <li ref={ref} className={cn('', className)} {...props} />
 ));
-SidebarMenuItem.displayName = "SidebarMenuItem";
+SidebarMenuItem.displayName = 'SidebarMenuItem';
 
-const SidebarMenuButton = React.forwardRef(({ className, asChild, ...props }, ref) => {
-  if (asChild) {
-    return <div ref={ref} className={cn("", className)} {...props} />;
+const SidebarMenuButton = React.forwardRef(
+  ({ className, asChild, ...props }, ref) => {
+    if (asChild) {
+      return <div ref={ref} className={cn('', className)} {...props} />;
+    }
+    return (
+      <button
+        ref={ref}
+        className={cn('w-full text-left', className)}
+        {...props}
+      />
+    );
   }
-  return (
-    <button
-      ref={ref}
-      className={cn("w-full text-left", className)}
-      {...props}
-    />
-  );
-});
-SidebarMenuButton.displayName = "SidebarMenuButton";
+);
+SidebarMenuButton.displayName = 'SidebarMenuButton';
 
 const SidebarTrigger = React.forwardRef(({ className, ...props }, ref) => (
-  <button
-    ref={ref}
-    className={cn("", className)}
-    {...props}
-  />
+  <button ref={ref} className={cn('', className)} {...props} />
 ));
-SidebarTrigger.displayName = "SidebarTrigger";
+SidebarTrigger.displayName = 'SidebarTrigger';
 
 export {
   SidebarProvider,

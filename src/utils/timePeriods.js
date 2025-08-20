@@ -1,7 +1,21 @@
 import timePeriodsConfig from '../config/timePeriods.json';
-import { startOfDay, endOfDay, subDays, subMonths, startOfMonth, endOfMonth, 
-         startOfQuarter, endOfQuarter, startOfYear, endOfYear, 
-         startOfWeek, endOfWeek, subWeeks, subQuarters, subYears } from 'date-fns';
+import {
+  startOfDay,
+  endOfDay,
+  subDays,
+  subMonths,
+  startOfMonth,
+  endOfMonth,
+  startOfQuarter,
+  endOfQuarter,
+  startOfYear,
+  endOfYear,
+  startOfWeek,
+  endOfWeek,
+  subWeeks,
+  subQuarters,
+  subYears,
+} from 'date-fns';
 
 export class TimePeriodManager {
   static getTimePeriods(context = 'dashboard') {
@@ -14,13 +28,16 @@ export class TimePeriodManager {
       value: key,
       label: config.label,
       description: config.description,
-      type: config.type
+      type: config.type,
     }));
   }
 
   static getTimePeriodLabel(context, key) {
     const periods = this.getTimePeriods(context);
-    return periods[key]?.label || key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+    return (
+      periods[key]?.label ||
+      key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())
+    );
   }
 
   static getTimePeriodDescription(context, key) {
@@ -31,22 +48,27 @@ export class TimePeriodManager {
   static getDefaultTimePeriod(context = 'dashboard') {
     const periods = this.getTimePeriods(context);
     const keys = Object.keys(periods);
-    
+
     // Default preferences by context
     const defaults = {
       dashboard: 'last_30_days',
-      analytics: 'last_90_days', 
-      reports: 'this_month'
+      analytics: 'last_90_days',
+      reports: 'this_month',
     };
-    
+
     const preferred = defaults[context];
     return keys.includes(preferred) ? preferred : keys[0] || 'last_30_days';
   }
 
-  static calculateDateRange(context, key, customStart = null, customEnd = null) {
+  static calculateDateRange(
+    context,
+    key,
+    customStart = null,
+    customEnd = null
+  ) {
     const periods = this.getTimePeriods(context);
     const period = periods[key];
-    
+
     if (!period) {
       throw new Error(`Time period '${key}' not found in context '${context}'`);
     }
@@ -92,7 +114,9 @@ export class TimePeriodManager {
         break;
 
       case 'last_week':
-        const lastWeekStart = startOfWeek(subWeeks(now, 1), { weekStartsOn: 1 });
+        const lastWeekStart = startOfWeek(subWeeks(now, 1), {
+          weekStartsOn: 1,
+        });
         const lastWeekEnd = endOfWeek(subWeeks(now, 1), { weekStartsOn: 1 });
         startDate = lastWeekStart;
         endDate = lastWeekEnd;
@@ -139,16 +163,16 @@ export class TimePeriodManager {
       startDate,
       endDate,
       label: period.label,
-      description: period.description
+      description: period.description,
     };
   }
 
   static filterDataByDateRange(data, dateField, startDate, endDate) {
     if (!Array.isArray(data)) return [];
-    
+
     return data.filter(item => {
       if (!item[dateField]) return false;
-      
+
       const itemDate = new Date(item[dateField]);
       return itemDate >= startDate && itemDate <= endDate;
     });
@@ -156,22 +180,28 @@ export class TimePeriodManager {
 
   static getQuickFilters(context = 'dashboard') {
     const periods = this.getTimePeriods(context);
-    
+
     // Return commonly used quick filters
     const quickFilterKeys = {
-      dashboard: ['last_7_days', 'last_30_days', 'last_90_days', 'this_month', 'this_year'],
+      dashboard: [
+        'last_7_days',
+        'last_30_days',
+        'last_90_days',
+        'this_month',
+        'this_year',
+      ],
       analytics: ['last_30_days', 'last_90_days', 'this_quarter', 'this_year'],
-      reports: ['today', 'this_week', 'this_month', 'this_quarter', 'custom']
+      reports: ['today', 'this_week', 'this_month', 'this_quarter', 'custom'],
     };
-    
+
     const keys = quickFilterKeys[context] || quickFilterKeys.dashboard;
-    
+
     return keys
       .filter(key => periods[key])
       .map(key => ({
         value: key,
         label: periods[key].label,
-        description: periods[key].description
+        description: periods[key].description,
       }));
   }
 
@@ -179,9 +209,11 @@ export class TimePeriodManager {
     // This would be used for future functionality to add custom time periods
     // For now, we'll just validate the structure
     if (!config.label || !config.description || !config.type) {
-      throw new Error('Time period config must include label, description, and type');
+      throw new Error(
+        'Time period config must include label, description, and type'
+      );
     }
-    
+
     // In a real implementation, this would save to localStorage or send to API
     console.log(`Would add custom time period: ${context}.${key}`, config);
     return true;
@@ -207,7 +239,7 @@ export class TimePeriodManager {
       if (!imported.dashboard || !imported.analytics || !imported.reports) {
         throw new Error('Invalid time periods structure');
       }
-      
+
       // In a real implementation, this would update the config
       console.log('Would import time periods:', imported);
       return true;
@@ -217,15 +249,15 @@ export class TimePeriodManager {
   }
 
   static formatDateRange(startDate, endDate) {
-    const options = { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    const options = {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
     };
-    
+
     const start = startDate.toLocaleDateString('en-US', options);
     const end = endDate.toLocaleDateString('en-US', options);
-    
+
     return `${start} - ${end}`;
   }
 

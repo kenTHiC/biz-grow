@@ -7,14 +7,14 @@
       "type": "relative"
     },
     "last_30_days": {
-      "label": "Last 30 Days", 
+      "label": "Last 30 Days",
       "description": "Data from the past 30 days",
       "days": 30,
       "type": "relative"
     },
     "last_90_days": {
       "label": "Last 90 Days",
-      "description": "Data from the past 90 days", 
+      "description": "Data from the past 90 days",
       "days": 90,
       "type": "relative"
     },
@@ -59,7 +59,7 @@
       "type": "relative"
     },
     "last_90_days": {
-      "label": "Last 90 Days", 
+      "label": "Last 90 Days",
       "description": "Analytics for the past 90 days",
       "days": 90,
       "type": "relative"
@@ -72,7 +72,7 @@
     },
     "last_12_months": {
       "label": "Last 12 Months",
-      "description": "Analytics for the past 12 months", 
+      "description": "Analytics for the past 12 months",
       "months": 12,
       "type": "relative"
     },
@@ -82,7 +82,7 @@
       "type": "current_quarter"
     },
     "this_year": {
-      "label": "This Year", 
+      "label": "This Year",
       "description": "Analytics for the current year",
       "type": "current_year"
     },
@@ -100,7 +100,7 @@
       "type": "relative"
     },
     "yesterday": {
-      "label": "Yesterday", 
+      "label": "Yesterday",
       "description": "Yesterday's data only",
       "type": "yesterday"
     },
@@ -111,7 +111,7 @@
     },
     "last_week": {
       "label": "Last Week",
-      "description": "Data from last week", 
+      "description": "Data from last week",
       "type": "last_week"
     },
     "this_month": {
@@ -130,7 +130,7 @@
       "type": "current_quarter"
     },
     "last_quarter": {
-      "label": "Last Quarter", 
+      "label": "Last Quarter",
       "description": "Data from last quarter",
       "type": "last_quarter"
     },
@@ -146,7 +146,7 @@
     },
     "custom": {
       "label": "Custom Range",
-      "description": "Select custom date range", 
+      "description": "Select custom date range",
       "type": "custom"
     }
   }

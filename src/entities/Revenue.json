@@ -12,14 +12,7 @@
     },
     "category": {
       "type": "string",
-      "enum": [
-        "product_sales",
-        "service_revenue",
-        "subscription",
-        "consulting",
-        "licensing",
-        "other"
-      ],
+      "enum": ["product_sales", "service_revenue", "subscription", "consulting", "licensing", "other"],
       "default": "product_sales",
       "description": "Revenue category"
     },
@@ -37,8 +30,5 @@
       "description": "Revenue description"
     }
   },
-  "required": [
-    "amount",
-    "date"
-  ]
+  "required": ["amount", "date"]
 }

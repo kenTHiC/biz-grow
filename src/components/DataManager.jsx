@@ -1,5 +1,14 @@
 import React, { useState, useRef } from 'react';
-import { Upload, Download, FileText, Database, AlertTriangle, CheckCircle, X, Settings } from 'lucide-react';
+import {
+  Upload,
+  Download,
+  FileText,
+  Database,
+  AlertTriangle,
+  CheckCircle,
+  X,
+  Settings,
+} from 'lucide-react';
 import { useToast } from './ui/toast';
 import ConfirmationModal from './ui/confirmation-modal';
 import DataImporter from '../utils/dataImporter';
@@ -16,7 +25,7 @@ const DataManager = ({ isOpen, onClose, onDataChange }) => {
   const [confirmModal, setConfirmModal] = useState({ isOpen: false, type: '' });
   const fileInputRef = useRef(null);
 
-  const handleFileSelect = async (event) => {
+  const handleFileSelect = async event => {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -27,21 +36,21 @@ const DataManager = ({ isOpen, onClose, onDataChange }) => {
     try {
       const importedData = await DataImporter.importFile(file);
       const preview = DataImporter.generateImportPreview(importedData);
-      
+
       setImportPreview({
         data: importedData,
         preview: preview,
-        filename: file.name
+        filename: file.name,
       });
-      
+
       setImportStatus({
         type: 'success',
-        message: `File "${file.name}" loaded successfully. Review the preview below.`
+        message: `File "${file.name}" loaded successfully. Review the preview below.`,
       });
     } catch (error) {
       setImportStatus({
         type: 'error',
-        message: error.message
+        message: error.message,
       });
     } finally {
       setIsProcessing(false);
@@ -59,14 +68,14 @@ const DataManager = ({ isOpen, onClose, onDataChange }) => {
       const result = await dataStore.importData(importPreview.data, {
         merge: mergeData,
         validateData: true,
-        createBackup: true
+        createBackup: true,
       });
 
       console.log('Import result:', result);
 
       setImportStatus({
         type: 'success',
-        message: `Successfully imported ${result.imported.customers} customers, ${result.imported.revenues} revenues, and ${result.imported.expenses} expenses.`
+        message: `Successfully imported ${result.imported.customers} customers, ${result.imported.revenues} revenues, and ${result.imported.expenses} expenses.`,
       });
 
       setImportPreview(null);
@@ -79,51 +88,50 @@ const DataManager = ({ isOpen, onClose, onDataChange }) => {
       setTimeout(() => {
         window.location.reload();
       }, 1500);
-
     } catch (error) {
       console.error('Import error:', error);
       setImportStatus({
         type: 'error',
-        message: error.message
+        message: error.message,
       });
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const handleExport = async (format) => {
+  const handleExport = async format => {
     setIsProcessing(true);
     setExportStatus(null);
 
     try {
       const allData = dataStore.exportAllData();
       const result = await DataExporter.exportData(allData, format);
-      
+
       setExportStatus({
         type: 'success',
-        message: `Data exported successfully as ${format.toUpperCase()}.`
+        message: `Data exported successfully as ${format.toUpperCase()}.`,
       });
     } catch (error) {
       setExportStatus({
         type: 'error',
-        message: error.message
+        message: error.message,
       });
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const handleDownloadTemplate = async (dataType) => {
+  const handleDownloadTemplate = async dataType => {
     try {
       await DataExporter.generateTemplate(dataType, 'csv');
       setExportStatus({
         type: 'success',
-        message: `${dataType} template downloaded successfully.`
+        message: `${dataType} template downloaded successfully.`,
       });
     } catch (error) {
       setExportStatus({
         type: 'error',
-        message: error.message
+        message: error.message,
       });
     }
   };
@@ -137,7 +145,7 @@ const DataManager = ({ isOpen, onClose, onDataChange }) => {
     onDataChange?.();
     setImportStatus({
       type: 'success',
-      message: 'All data cleared successfully.'
+      message: 'All data cleared successfully.',
     });
     toast.success('All data cleared successfully!');
   };
@@ -156,9 +164,10 @@ const DataManager = ({ isOpen, onClose, onDataChange }) => {
     if (confirmModal.type === 'clear-all') {
       return {
         title: 'Clear All Data',
-        message: 'Are you sure you want to clear all data? This action cannot be undone and will permanently delete all customers, revenues, and expenses.',
+        message:
+          'Are you sure you want to clear all data? This action cannot be undone and will permanently delete all customers, revenues, and expenses.',
         confirmText: 'Clear All Data',
-        variant: 'danger'
+        variant: 'danger',
       };
     }
     return {};
@@ -228,9 +237,10 @@ const DataManager = ({ isOpen, onClose, onDataChange }) => {
               <div>
                 <h3 className="text-lg font-medium mb-3">Import Your Data</h3>
                 <p className="text-gray-600 mb-4">
-                  Upload your business data from JSON, CSV, or Excel files. We'll automatically detect and map your data fields.
+                  Upload your business data from JSON, CSV, or Excel files.
+                  We'll automatically detect and map your data fields.
                 </p>
-                
+
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
                   <input
                     ref={fileInputRef}
@@ -240,8 +250,12 @@ const DataManager = ({ isOpen, onClose, onDataChange }) => {
                     className="hidden"
                   />
                   <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-lg font-medium mb-2">Choose a file to import</p>
-                  <p className="text-gray-600 mb-4">Supports JSON, CSV, and Excel files</p>
+                  <p className="text-lg font-medium mb-2">
+                    Choose a file to import
+                  </p>
+                  <p className="text-gray-600 mb-4">
+                    Supports JSON, CSV, and Excel files
+                  </p>
                   <button
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isProcessing}
@@ -253,9 +267,13 @@ const DataManager = ({ isOpen, onClose, onDataChange }) => {
 
                 {/* Status Messages */}
                 {importStatus && (
-                  <div className={`p-4 rounded-lg flex items-center gap-3 ${
-                    importStatus.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
-                  }`}>
+                  <div
+                    className={`p-4 rounded-lg flex items-center gap-3 ${
+                      importStatus.type === 'success'
+                        ? 'bg-green-50 text-green-800'
+                        : 'bg-red-50 text-red-800'
+                    }`}
+                  >
                     {importStatus.type === 'success' ? (
                       <CheckCircle className="w-5 h-5" />
                     ) : (
@@ -268,21 +286,25 @@ const DataManager = ({ isOpen, onClose, onDataChange }) => {
                 {/* Import Preview */}
                 {importPreview && (
                   <div className="border rounded-lg p-4 bg-gray-50">
-                    <h4 className="font-medium mb-3">Import Preview: {importPreview.filename}</h4>
-                    
-                    {Object.entries(importPreview.preview).map(([dataType, info]) => (
-                      <div key={dataType} className="mb-4">
-                        <h5 className="font-medium capitalize mb-2">
-                          {dataType} ({info.total} records)
-                        </h5>
-                        <div className="bg-white rounded border p-3 text-sm">
-                          <div className="font-medium mb-2">Sample data:</div>
-                          <pre className="text-xs overflow-x-auto">
-                            {JSON.stringify(info.sample[0], null, 2)}
-                          </pre>
+                    <h4 className="font-medium mb-3">
+                      Import Preview: {importPreview.filename}
+                    </h4>
+
+                    {Object.entries(importPreview.preview).map(
+                      ([dataType, info]) => (
+                        <div key={dataType} className="mb-4">
+                          <h5 className="font-medium capitalize mb-2">
+                            {dataType} ({info.total} records)
+                          </h5>
+                          <div className="bg-white rounded border p-3 text-sm">
+                            <div className="font-medium mb-2">Sample data:</div>
+                            <pre className="text-xs overflow-x-auto">
+                              {JSON.stringify(info.sample[0], null, 2)}
+                            </pre>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    )}
 
                     <div className="flex gap-3 mt-4">
                       <button
@@ -346,7 +368,8 @@ const DataManager = ({ isOpen, onClose, onDataChange }) => {
               <div>
                 <h3 className="text-lg font-medium mb-3">Export Your Data</h3>
                 <p className="text-gray-600 mb-4">
-                  Download your business data in various formats for backup or analysis.
+                  Download your business data in various formats for backup or
+                  analysis.
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -358,7 +381,8 @@ const DataManager = ({ isOpen, onClose, onDataChange }) => {
                     <FileText className="w-8 h-8 text-blue-600 mb-3" />
                     <h4 className="font-medium mb-2">JSON Format</h4>
                     <p className="text-sm text-gray-600">
-                      Complete data export with metadata. Best for backup and re-importing.
+                      Complete data export with metadata. Best for backup and
+                      re-importing.
                     </p>
                   </button>
 
@@ -370,7 +394,8 @@ const DataManager = ({ isOpen, onClose, onDataChange }) => {
                     <FileText className="w-8 h-8 text-green-600 mb-3" />
                     <h4 className="font-medium mb-2">CSV Format</h4>
                     <p className="text-sm text-gray-600">
-                      Separate CSV files for each data type. Great for spreadsheet analysis.
+                      Separate CSV files for each data type. Great for
+                      spreadsheet analysis.
                     </p>
                   </button>
 
@@ -382,15 +407,20 @@ const DataManager = ({ isOpen, onClose, onDataChange }) => {
                     <FileText className="w-8 h-8 text-orange-600 mb-3" />
                     <h4 className="font-medium mb-2">Excel Format</h4>
                     <p className="text-sm text-gray-600">
-                      Multi-sheet Excel file with summary. Perfect for detailed analysis.
+                      Multi-sheet Excel file with summary. Perfect for detailed
+                      analysis.
                     </p>
                   </button>
                 </div>
 
                 {exportStatus && (
-                  <div className={`p-4 rounded-lg flex items-center gap-3 ${
-                    exportStatus.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
-                  }`}>
+                  <div
+                    className={`p-4 rounded-lg flex items-center gap-3 ${
+                      exportStatus.type === 'success'
+                        ? 'bg-green-50 text-green-800'
+                        : 'bg-red-50 text-red-800'
+                    }`}
+                  >
                     {exportStatus.type === 'success' ? (
                       <CheckCircle className="w-5 h-5" />
                     ) : (
@@ -408,12 +438,15 @@ const DataManager = ({ isOpen, onClose, onDataChange }) => {
             <div className="space-y-6">
               <div>
                 <h3 className="text-lg font-medium mb-3">Data Settings</h3>
-                
+
                 <div className="space-y-4">
                   <div className="border rounded-lg p-4 bg-red-50">
-                    <h4 className="font-medium text-red-800 mb-2">Danger Zone</h4>
+                    <h4 className="font-medium text-red-800 mb-2">
+                      Danger Zone
+                    </h4>
                     <p className="text-red-700 mb-3">
-                      This action will permanently delete all your data. This cannot be undone.
+                      This action will permanently delete all your data. This
+                      cannot be undone.
                     </p>
                     <button
                       onClick={handleClearAllData}

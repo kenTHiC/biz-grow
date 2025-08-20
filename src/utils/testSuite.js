@@ -1,7 +1,7 @@
 /**
  * BizGrow v1.3.3 Comprehensive Test Suite
  * Enhanced testing framework for multi-selection, modals, and data management
- * 
+ *
  * Usage:
  * - Development: window.BizGrowTestSuite.runAllTests()
  * - Quick Test: window.BizGrowTestSuite.quickTest()
@@ -25,14 +25,15 @@ class BizGrowTestSuite {
 
   log(message, type = 'info') {
     const timestamp = new Date().toLocaleTimeString();
-    const prefix = {
-      'info': '📋',
-      'success': '✅',
-      'error': '❌',
-      'warning': '⚠️',
-      'debug': '🔍'
-    }[type] || '📋';
-    
+    const prefix =
+      {
+        info: '📋',
+        success: '✅',
+        error: '❌',
+        warning: '⚠️',
+        debug: '🔍',
+      }[type] || '📋';
+
     console.log(`${prefix} [${timestamp}] ${message}`);
   }
 
@@ -41,17 +42,17 @@ class BizGrowTestSuite {
       name: testName,
       passed: Boolean(condition),
       details: details,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
-    
+
     this.testResults.push(result);
-    
+
     if (result.passed) {
       this.log(`✅ PASS: ${testName}`, 'success');
     } else {
       this.log(`❌ FAIL: ${testName} - ${details}`, 'error');
     }
-    
+
     return result.passed;
   }
 
@@ -61,13 +62,13 @@ class BizGrowTestSuite {
 
   testMultiSelection() {
     this.log('🧪 Testing Multi-Selection Functionality...', 'info');
-    
+
     // Test 1: Set-based selection logic
     const testSet = new Set();
     testSet.add('1');
     testSet.add('2');
     testSet.add('1'); // Duplicate should be ignored
-    
+
     this.assert(
       testSet.size === 2,
       'Set-based selection prevents duplicates',
@@ -78,7 +79,7 @@ class BizGrowTestSuite {
     const selectedItems = ['1', '2', '3'];
     const itemId = 2;
     const normalizedCheck = selectedItems.map(String).includes(String(itemId));
-    
+
     this.assert(
       normalizedCheck === true,
       'ID normalization works correctly',
@@ -87,16 +88,16 @@ class BizGrowTestSuite {
 
     // Test 3: Selection state management
     let mockSelection = [];
-    const toggleSelection = (id) => {
+    const toggleSelection = id => {
       const sid = String(id);
       const set = new Set(mockSelection.map(String));
-      
+
       if (set.has(sid)) {
         set.delete(sid);
       } else {
         set.add(sid);
       }
-      
+
       mockSelection = Array.from(set);
       return mockSelection;
     };
@@ -104,7 +105,7 @@ class BizGrowTestSuite {
     toggleSelection(1);
     toggleSelection(2);
     toggleSelection(1); // Should remove
-    
+
     this.assert(
       mockSelection.length === 1 && mockSelection.includes('2'),
       'Toggle selection works correctly',
@@ -114,7 +115,9 @@ class BizGrowTestSuite {
     // Test 4: Select All functionality
     const allItems = [1, 2, 3, 4, 5];
     const selectAll = (currentSelection, allIds) => {
-      return currentSelection.length === allIds.length ? [] : allIds.map(String);
+      return currentSelection.length === allIds.length
+        ? []
+        : allIds.map(String);
     };
 
     let selection = [];
@@ -144,11 +147,11 @@ class BizGrowTestSuite {
 
     // Test 1: Modal state management
     let modalState = { isOpen: false, type: '', data: null };
-    
+
     const openModal = (type, data) => {
       modalState = { isOpen: true, type, data };
     };
-    
+
     const closeModal = () => {
       modalState = { isOpen: false, type: '', data: null };
     };
@@ -173,7 +176,7 @@ class BizGrowTestSuite {
         return {
           title: `Delete ${data.type}`,
           message: `Are you sure you want to delete this ${data.type}?`,
-          variant: 'danger'
+          variant: 'danger',
         };
       }
       return {};
@@ -201,20 +204,20 @@ class BizGrowTestSuite {
       { id: 1, name: 'Item 1' },
       { id: 2, name: 'Item 2' },
       { id: 1, name: 'Item 3' }, // Duplicate ID
-      { id: 3, name: 'Item 4' }
+      { id: 3, name: 'Item 4' },
     ];
 
-    const findDuplicateIds = (items) => {
+    const findDuplicateIds = items => {
       const seen = new Set();
       const duplicates = new Set();
-      
+
       items.forEach(item => {
         if (seen.has(item.id)) {
           duplicates.add(item.id);
         }
         seen.add(item.id);
       });
-      
+
       return Array.from(duplicates);
     };
 
@@ -226,10 +229,10 @@ class BizGrowTestSuite {
     );
 
     // Test 2: ID uniqueness enforcement
-    const fixDuplicateIds = (items) => {
+    const fixDuplicateIds = items => {
       const seen = new Set();
       let nextId = Math.max(...items.map(i => i.id)) + 1;
-      
+
       return items.map(item => {
         if (seen.has(item.id)) {
           const newItem = { ...item, id: nextId++ };
@@ -244,7 +247,7 @@ class BizGrowTestSuite {
     const fixedItems = fixDuplicateIds(testItems);
     const fixedIds = fixedItems.map(i => i.id);
     const uniqueIds = [...new Set(fixedIds)];
-    
+
     this.assert(
       fixedIds.length === uniqueIds.length,
       'ID uniqueness enforcement works',
@@ -252,11 +255,11 @@ class BizGrowTestSuite {
     );
 
     // Test 3: Sequential ID generation
-    const generateNextId = (existingItems) => {
+    const generateNextId = existingItems => {
       const validIds = existingItems
         .map(item => parseInt(item.id))
         .filter(id => !isNaN(id));
-      
+
       return validIds.length > 0 ? Math.max(...validIds) + 1 : 1;
     };
 
@@ -278,17 +281,29 @@ class BizGrowTestSuite {
     this.log('🧪 Testing Data Validation & CSV Import...', 'info');
 
     // Test 1: CSV data type detection
-    const detectDataType = (headers) => {
+    const detectDataType = headers => {
       const headerStr = headers.join(',').toLowerCase();
-      
-      if (headerStr.includes('customer') || headerStr.includes('email') || headerStr.includes('name')) {
+
+      if (
+        headerStr.includes('customer') ||
+        headerStr.includes('email') ||
+        headerStr.includes('name')
+      ) {
         return 'customers';
-      } else if (headerStr.includes('revenue') || headerStr.includes('source') || headerStr.includes('customer_name')) {
+      } else if (
+        headerStr.includes('revenue') ||
+        headerStr.includes('source') ||
+        headerStr.includes('customer_name')
+      ) {
         return 'revenues';
-      } else if (headerStr.includes('expense') || headerStr.includes('vendor') || headerStr.includes('category')) {
+      } else if (
+        headerStr.includes('expense') ||
+        headerStr.includes('vendor') ||
+        headerStr.includes('category')
+      ) {
         return 'expenses';
       }
-      
+
       return 'unknown';
     };
 
@@ -315,26 +330,34 @@ class BizGrowTestSuite {
     );
 
     // Test 2: Data validation
-    const validateCustomer = (customer) => {
+    const validateCustomer = customer => {
       const errors = [];
-      
+
       if (!customer.name || customer.name.trim() === '') {
         errors.push('Name is required');
       }
-      
+
       if (!customer.email || !customer.email.includes('@')) {
         errors.push('Valid email is required');
       }
-      
+
       if (customer.total_value && isNaN(parseFloat(customer.total_value))) {
         errors.push('Total value must be a number');
       }
-      
+
       return errors;
     };
 
-    const validCustomer = { name: 'John Doe', email: 'john@example.com', total_value: '1000' };
-    const invalidCustomer = { name: '', email: 'invalid-email', total_value: 'not-a-number' };
+    const validCustomer = {
+      name: 'John Doe',
+      email: 'john@example.com',
+      total_value: '1000',
+    };
+    const invalidCustomer = {
+      name: '',
+      email: 'invalid-email',
+      total_value: 'not-a-number',
+    };
 
     this.assert(
       validateCustomer(validCustomer).length === 0,
@@ -376,19 +399,22 @@ class BizGrowTestSuite {
     };
 
     this.assert(
-      formatToastMessage('success', 'deleted', 'customer') === 'Customer deleted successfully!',
+      formatToastMessage('success', 'deleted', 'customer') ===
+        'Customer deleted successfully!',
       'Toast success message formatting',
       'Single customer delete message'
     );
 
     this.assert(
-      formatToastMessage('success', 'deleted', 'revenue', 3) === 'Revenues deleted successfully!',
+      formatToastMessage('success', 'deleted', 'revenue', 3) ===
+        'Revenues deleted successfully!',
       'Toast bulk success message formatting',
       'Multiple revenue delete message'
     );
 
     this.assert(
-      formatToastMessage('warning', 'deleted', 'expense') === 'Please select expenses to delete',
+      formatToastMessage('warning', 'deleted', 'expense') ===
+        'Please select expenses to delete',
       'Toast warning message formatting',
       'No selection warning message'
     );
@@ -402,7 +428,7 @@ class BizGrowTestSuite {
         id: Date.now() + Math.random(),
         message,
         type,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       toastQueue.push(toast);
@@ -437,7 +463,7 @@ class BizGrowTestSuite {
     this.log('🧪 Testing Performance & Memory Management...', 'info');
 
     // Test 1: Large dataset handling
-    const generateLargeDataset = (size) => {
+    const generateLargeDataset = size => {
       const startTime = performance.now();
       const dataset = [];
 
@@ -446,7 +472,9 @@ class BizGrowTestSuite {
           id: i + 1,
           name: `Item ${i + 1}`,
           value: Math.random() * 1000,
-          date: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString()
+          date: new Date(
+            Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000
+          ).toISOString(),
         });
       }
 
@@ -463,7 +491,7 @@ class BizGrowTestSuite {
     );
 
     // Test 2: Set operations performance
-    const testSetPerformance = (size) => {
+    const testSetPerformance = size => {
       const startTime = performance.now();
       const testSet = new Set();
 
@@ -490,7 +518,7 @@ class BizGrowTestSuite {
     );
 
     // Test 3: Memory usage estimation
-    const estimateMemoryUsage = (data) => {
+    const estimateMemoryUsage = data => {
       const jsonString = JSON.stringify(data);
       const sizeInBytes = new Blob([jsonString]).size;
       const sizeInKB = (sizeInBytes / 1024).toFixed(2);
@@ -518,7 +546,10 @@ class BizGrowTestSuite {
     // Test 1: Null/undefined handling
     const safeAccess = (obj, path, defaultValue = null) => {
       try {
-        return path.split('.').reduce((current, key) => current?.[key], obj) ?? defaultValue;
+        return (
+          path.split('.').reduce((current, key) => current?.[key], obj) ??
+          defaultValue
+        );
       } catch (error) {
         return defaultValue;
       }
@@ -599,7 +630,7 @@ class BizGrowTestSuite {
           console.warn('LocalStorage set error:', error.message);
           return false;
         }
-      }
+      },
     };
 
     const testData = { test: 'data', number: 123 };
@@ -607,7 +638,8 @@ class BizGrowTestSuite {
     const getData = safeLocalStorage.get('test-key');
 
     this.assert(
-      setResult === true && JSON.stringify(getData) === JSON.stringify(testData),
+      setResult === true &&
+        JSON.stringify(getData) === JSON.stringify(testData),
       'Safe localStorage operations',
       'Successfully stored and retrieved data'
     );
@@ -670,8 +702,10 @@ class BizGrowTestSuite {
 
       // Check localStorage usage
       const storageUsage = this.getStorageUsage();
-      this.log(`💾 Storage Usage: ${storageUsage.used}KB / ${storageUsage.available}KB`, 'info');
-
+      this.log(
+        `💾 Storage Usage: ${storageUsage.used}KB / ${storageUsage.available}KB`,
+        'info'
+      );
     } catch (error) {
       this.log(`Error during state debug: ${error.message}`, 'error');
     }
@@ -690,9 +724,9 @@ class BizGrowTestSuite {
       const available = 5 * 1024 * 1024; // 5MB estimate
 
       return {
-        used: Math.round(used / 1024 * 100) / 100, // KB with 2 decimal places
+        used: Math.round((used / 1024) * 100) / 100, // KB with 2 decimal places
         available: Math.round(available / 1024),
-        percentage: Math.round((used / available) * 100)
+        percentage: Math.round((used / available) * 100),
       };
     } catch (error) {
       return { used: 0, available: 0, percentage: 0 };
@@ -706,7 +740,8 @@ class BizGrowTestSuite {
       case 'network':
         // Simulate network failure
         const originalFetch = window.fetch;
-        window.fetch = () => Promise.reject(new Error('Simulated network error'));
+        window.fetch = () =>
+          Promise.reject(new Error('Simulated network error'));
 
         setTimeout(() => {
           window.fetch = originalFetch;
@@ -761,7 +796,7 @@ class BizGrowTestSuite {
     this.testResults = [];
 
     this.log('🚀 Starting BizGrow v1.3.3 Comprehensive Test Suite...', 'info');
-    this.log('=' .repeat(60), 'info');
+    this.log('='.repeat(60), 'info');
 
     try {
       // Run all test categories
@@ -776,7 +811,6 @@ class BizGrowTestSuite {
       // Generate summary
       this.endTime = performance.now();
       this.generateTestReport();
-
     } catch (error) {
       this.log(`Test suite error: ${error.message}`, 'error');
     } finally {
@@ -796,8 +830,10 @@ class BizGrowTestSuite {
     const passed = this.testResults.filter(r => r.passed).length;
     const total = this.testResults.length;
 
-    this.log(`⚡ Quick Test Complete: ${passed}/${total} tests passed`,
-             passed === total ? 'success' : 'warning');
+    this.log(
+      `⚡ Quick Test Complete: ${passed}/${total} tests passed`,
+      passed === total ? 'success' : 'warning'
+    );
 
     return { passed, total, success: passed === total };
   }
@@ -808,9 +844,9 @@ class BizGrowTestSuite {
     const total = this.testResults.length;
     const duration = ((this.endTime - this.startTime) / 1000).toFixed(2);
 
-    this.log('=' .repeat(60), 'info');
+    this.log('='.repeat(60), 'info');
     this.log('📋 TEST SUITE SUMMARY', 'info');
-    this.log('=' .repeat(60), 'info');
+    this.log('='.repeat(60), 'info');
     this.log(`✅ Passed: ${passed}`, 'success');
     this.log(`❌ Failed: ${failed}`, failed > 0 ? 'error' : 'info');
     this.log(`📊 Total: ${total}`, 'info');
@@ -826,7 +862,7 @@ class BizGrowTestSuite {
         });
     }
 
-    this.log('=' .repeat(60), 'info');
+    this.log('='.repeat(60), 'info');
 
     // Return results for programmatic access
     return {
@@ -835,7 +871,7 @@ class BizGrowTestSuite {
       total,
       duration: parseFloat(duration),
       successRate: Math.round((passed / total) * 100),
-      results: this.testResults
+      results: this.testResults,
     };
   }
 
@@ -847,21 +883,22 @@ class BizGrowTestSuite {
       environment: {
         userAgent: navigator.userAgent,
         url: window.location.href,
-        localStorage: this.getStorageUsage()
+        localStorage: this.getStorageUsage(),
       },
       summary: {
         passed: report.passed,
         failed: report.failed,
         total: report.total,
         duration: report.duration,
-        successRate: report.successRate
+        successRate: report.successRate,
       },
-      details: this.testResults
+      details: this.testResults,
     };
 
     // Copy to clipboard if available
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(JSON.stringify(exportData, null, 2))
+      navigator.clipboard
+        .writeText(JSON.stringify(exportData, null, 2))
         .then(() => this.log('📋 Test results copied to clipboard!', 'success'))
         .catch(() => this.log('❌ Failed to copy to clipboard', 'error'));
     }
@@ -893,9 +930,9 @@ if (typeof window !== 'undefined') {
     testPerformance: () => testSuite.testPerformance(),
     testErrorHandling: () => testSuite.testErrorHandling(),
     debugState: () => testSuite.debugState(),
-    simulateError: (type) => testSuite.simulateError(type),
+    simulateError: type => testSuite.simulateError(type),
     exportResults: () => testSuite.exportResults(),
-    getResults: () => testSuite.testResults
+    getResults: () => testSuite.testResults,
   };
 
   console.log('🧪 BizGrow Test Suite v1.3.3 loaded!');

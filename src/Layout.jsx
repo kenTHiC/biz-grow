@@ -1,7 +1,13 @@
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import { createPageUrl } from "@/utils";
-import { BarChart3, TrendingUp, Users, FileSpreadsheet, Settings } from "lucide-react";
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
+import {
+  BarChart3,
+  TrendingUp,
+  Users,
+  FileSpreadsheet,
+  Settings,
+} from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -14,27 +20,27 @@ import {
   SidebarHeader,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar";
+} from '@/components/ui/sidebar';
 
 const navigationItems = [
   {
-    title: "Dashboard",
-    url: createPageUrl("Dashboard"),
+    title: 'Dashboard',
+    url: createPageUrl('Dashboard'),
     icon: BarChart3,
   },
   {
-    title: "Analytics",
-    url: createPageUrl("Analytics"),
+    title: 'Analytics',
+    url: createPageUrl('Analytics'),
     icon: TrendingUp,
   },
   {
-    title: "Customers",
-    url: createPageUrl("Customers"),
+    title: 'Customers',
+    url: createPageUrl('Customers'),
     icon: Users,
   },
   {
-    title: "Reports",
-    url: createPageUrl("Reports"),
+    title: 'Reports',
+    url: createPageUrl('Reports'),
     icon: FileSpreadsheet,
   },
 ];
@@ -72,12 +78,16 @@ export default function Layout({ children, currentPageName }) {
                 <BarChart3 className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="font-bold text-slate-900 text-lg">Business Hub</h2>
-                <p className="text-xs text-slate-500 font-medium">Analytics Dashboard</p>
+                <h2 className="font-bold text-slate-900 text-lg">
+                  Business Hub
+                </h2>
+                <p className="text-xs text-slate-500 font-medium">
+                  Analytics Dashboard
+                </p>
               </div>
             </div>
           </SidebarHeader>
-          
+
           <SidebarContent className="p-4">
             <SidebarGroup>
               <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 py-2">
@@ -85,13 +95,13 @@ export default function Layout({ children, currentPageName }) {
               </SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu className="space-y-1">
-                  {navigationItems.map((item) => (
+                  {navigationItems.map(item => (
                     <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton 
-                        asChild 
+                      <SidebarMenuButton
+                        asChild
                         className={`hover:bg-blue-50/80 hover:text-blue-700 transition-all duration-300 rounded-xl px-4 py-3 ${
-                          location.pathname === item.url 
-                            ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-200' 
+                          location.pathname === item.url
+                            ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-200'
                             : 'text-slate-600'
                         }`}
                       >

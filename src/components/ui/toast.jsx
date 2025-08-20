@@ -15,7 +15,7 @@ export const useToast = () => {
 export const ToastProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);
 
-  const addToast = (toast) => {
+  const addToast = toast => {
     const id = Date.now() + Math.random();
     const newToast = { id, ...toast };
     setToasts(prev => [...prev, newToast]);
@@ -28,15 +28,19 @@ export const ToastProvider = ({ children }) => {
     return id;
   };
 
-  const removeToast = (id) => {
+  const removeToast = id => {
     setToasts(prev => prev.filter(toast => toast.id !== id));
   };
 
   const toast = {
-    success: (message, options = {}) => addToast({ type: 'success', message, ...options }),
-    error: (message, options = {}) => addToast({ type: 'error', message, ...options }),
-    warning: (message, options = {}) => addToast({ type: 'warning', message, ...options }),
-    info: (message, options = {}) => addToast({ type: 'info', message, ...options }),
+    success: (message, options = {}) =>
+      addToast({ type: 'success', message, ...options }),
+    error: (message, options = {}) =>
+      addToast({ type: 'error', message, ...options }),
+    warning: (message, options = {}) =>
+      addToast({ type: 'warning', message, ...options }),
+    info: (message, options = {}) =>
+      addToast({ type: 'info', message, ...options }),
   };
 
   return (
@@ -51,8 +55,12 @@ const ToastContainer = ({ toasts, removeToast }) => {
   return (
     <div className="fixed top-4 right-4 z-50 space-y-2">
       <AnimatePresence>
-        {toasts.map((toast) => (
-          <Toast key={toast.id} toast={toast} onRemove={() => removeToast(toast.id)} />
+        {toasts.map(toast => (
+          <Toast
+            key={toast.id}
+            toast={toast}
+            onRemove={() => removeToast(toast.id)}
+          />
         ))}
       </AnimatePresence>
     </div>
@@ -62,21 +70,31 @@ const ToastContainer = ({ toasts, removeToast }) => {
 const Toast = ({ toast, onRemove }) => {
   const getIcon = () => {
     switch (toast.type) {
-      case 'success': return <CheckCircle className="w-5 h-5 text-green-600" />;
-      case 'error': return <XCircle className="w-5 h-5 text-red-600" />;
-      case 'warning': return <AlertCircle className="w-5 h-5 text-yellow-600" />;
-      case 'info': return <Info className="w-5 h-5 text-blue-600" />;
-      default: return <Info className="w-5 h-5 text-blue-600" />;
+      case 'success':
+        return <CheckCircle className="w-5 h-5 text-green-600" />;
+      case 'error':
+        return <XCircle className="w-5 h-5 text-red-600" />;
+      case 'warning':
+        return <AlertCircle className="w-5 h-5 text-yellow-600" />;
+      case 'info':
+        return <Info className="w-5 h-5 text-blue-600" />;
+      default:
+        return <Info className="w-5 h-5 text-blue-600" />;
     }
   };
 
   const getBackgroundColor = () => {
     switch (toast.type) {
-      case 'success': return 'bg-green-50 border-green-200';
-      case 'error': return 'bg-red-50 border-red-200';
-      case 'warning': return 'bg-yellow-50 border-yellow-200';
-      case 'info': return 'bg-blue-50 border-blue-200';
-      default: return 'bg-blue-50 border-blue-200';
+      case 'success':
+        return 'bg-green-50 border-green-200';
+      case 'error':
+        return 'bg-red-50 border-red-200';
+      case 'warning':
+        return 'bg-yellow-50 border-yellow-200';
+      case 'info':
+        return 'bg-blue-50 border-blue-200';
+      default:
+        return 'bg-blue-50 border-blue-200';
     }
   };
 
